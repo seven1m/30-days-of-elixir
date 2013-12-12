@@ -5,31 +5,31 @@ ExUnit.start
 defmodule ListTest do
   use ExUnit.Case
 
-  def list1 do
+  def sample do
     ["Tim", "Jen", "Mac", "Kai"]
   end
 
   test "sigil" do
-    assert list1 == %w(Tim Jen Mac Kai)
+    assert sample == %w(Tim Jen Mac Kai)
   end
 
   test "head" do
-    [head | _] = list1
+    [head | _] = sample
     assert head == "Tim"
   end
 
   test "tail" do
-    [_ | tail] = list1
+    [_ | tail] = sample
     assert tail == %w(Jen Mac Kai)
   end
 
   # warning, has to traverse the entire list!
   test "last item" do
-    assert List.last(list1) == "Kai"
+    assert List.last(sample) == "Kai"
   end
 
   test "delete item" do
-    assert List.delete(list1, "Mac") == %w(Tim Jen Kai)
+    assert List.delete(sample, "Mac") == %w(Tim Jen Kai)
     # only deletes the first occurrence
     assert List.delete([1, 2, 2, 3], 2) == [1, 2, 3]
   end
@@ -52,7 +52,7 @@ defmodule ListTest do
 
   # List.wrap is much like Ruby's Array() method
   test "wrap" do
-    assert List.wrap(list1) == list1
+    assert List.wrap(sample) == sample
     assert List.wrap(1) == [1]
     assert List.wrap([]) == []
     assert List.wrap(nil) == []
