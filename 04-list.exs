@@ -58,6 +58,16 @@ defmodule ListTest do
     assert List.wrap(nil) == []
   end
 
+  test "Enum.filter_map" do
+    some = Enum.filter_map sample, &(String.first(&1) >= "M"), &(&1 <> " Morgan")
+    assert some == ["Tim Morgan", "Mac Morgan"]
+  end
+
+  test "list comprehension" do
+    some = lc n inlist sample, String.first(n) < "M", do: n <> " Morgan"
+    assert some == ["Jen Morgan", "Kai Morgan"]
+  end
+
   # I was curious about raw speed of working with large lists...
   # Let's just build and reverse a large list.
   # Suprisingly, the manual way is not much slower.
