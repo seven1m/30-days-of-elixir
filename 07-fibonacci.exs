@@ -6,8 +6,6 @@ defmodule Fib do
   # named functions can have different arities, whereas anonymous functions cannot
   # also, anonymous functions cannot call themselves recursively :-(
 
-  def fib(acc, 0), do: acc
-
   def fib(n) when n < 2 do
     Enum.take @seed, n
   end
@@ -15,6 +13,8 @@ defmodule Fib do
   def fib(n) when n >= 2 do
     fib(@seed, n - 2)
   end
+
+  def fib(acc, 0), do: acc
 
   def fib(acc, n) do
     fib(acc ++ [Enum.at(acc, -2) + Enum.at(acc, -1)], n - 1)
