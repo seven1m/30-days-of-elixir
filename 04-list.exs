@@ -72,7 +72,7 @@ defmodule ListTest do
   # Let's just build and reverse a large list.
   # Suprisingly, the manual way is not much slower.
 
-  # Also got to play digest Erlang docs for timer:tc/1
+  # Also got to browse Erlang docs for timer:tc/1
   # (http://www.erlang.org/doc/man/timer.html#tc-1) and call thru from Elixir.
   # Easy!
 
