@@ -1,0 +1,48 @@
+ExUnit.start
+
+defrecord User, email: nil, password: nil
+
+defimpl String.Chars, for: User do
+  def to_string(User[email: email]) do
+    email
+  end
+end
+
+defmodule RecordTest do
+  use ExUnit.Case
+
+  defmodule ScopeTest do
+    use ExUnit.Case
+
+    defrecordp :person, first_name: nil, last_name: nil, age: nil
+
+    test "defrecordp" do
+      p = person(first_name: "Kai", last_name: "Morgan", age: 5) # regular function call
+      assert p == {:person, "Kai", "Morgan", 5} # just a tuple!
+    end
+  end
+
+  # CompileError
+  # test "defrecordp out of scope" do
+  #   person()
+  # end
+
+  def sample do
+    User[email: "kai@example.com", password: "trains"] # special [] syntax for record creation
+  end
+
+  test "defrecord" do
+    assert sample == {User, "kai@example.com", "trains"}
+  end
+
+  test "update" do
+    u = sample
+    u2 = u.update(email: "tim@example.com")
+    assert u2 == {User, "tim@example.com", "trains"}
+  end
+
+  test "protocol" do
+    assert to_string(sample) == "kai@example.com"
+  end
+end
+
