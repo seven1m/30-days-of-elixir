@@ -38,9 +38,11 @@ ExUnit.start
 defmodule InputOutputTest do
   use ExUnit.Case
 
+  import String
+
   test "read file" do
     art = CowInterrogator.cow_art
-    assert String.first(String.strip(art)) == "("
+    assert strip(art) |> first == "("
   end
 end
 
