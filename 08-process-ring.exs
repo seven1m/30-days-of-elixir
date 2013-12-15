@@ -20,7 +20,7 @@ defmodule Pinger do
         next <- {rest, :ok}
 
       # someone told us to stop, so pass along the message
-      {[next | rest], :ok} -> :ok
+      {[next | rest], :ok} ->
         next <- {rest, :ok}
 
       # done!
