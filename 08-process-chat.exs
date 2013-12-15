@@ -2,29 +2,41 @@
 # http://benjamintanweihao.github.io/blog/2013/07/13/elixir-for-the-lazy-impatient-and-busy-part-4-processes-101/
 
 # The goal here was to learn about Elixir's (Erlang's) lightweight processes.
-# The following module gets spawned a couple times and ping/pong back and forth.
+# The following module gets spawned a few times connected in a ring where messages are sent around in order.
 
 defmodule Pinger do
-  def ping(echo) do
+  @doc "Send message (echo) to the next process in the ring."
+  def ping(echo, limit) do
     receive do
-      :ok -> :ok
-      {sender, _, count} when count > 5 ->
-        sender <- :ok
-      {sender, msg, count} ->
-        IO.puts "Foo Received: #{inspect msg} (count #{count})"
+      # got a message, send another message to the next process in the ring
+      {[next | rest], msg, count} when count <= limit ->
+        IO.puts "Received: #{inspect msg} (count #{count})"
         :timer.sleep(1000)
-        sender <- {self, echo, count+1}
-        ping(echo)
+        next <- {rest ++ [next], echo, count+1}
+        ping(echo, limit)
+
+      # over our limit of messages, send :ok around the ring
+      {[next | rest], _, count} ->
+        next <- {rest, :ok}
+
+      # someone told us to stop, so pass along the message
+      {[next | rest], :ok} -> :ok
+        next <- {rest, :ok}
+
+      # done!
+      {[], :ok} -> :ok
     end
   end
 end
 
 defmodule Spawner do
   def start do
-    {foo, _foo_monitor} = Process.spawn_monitor(Pinger, :ping, ["ping"])
-    {bar, _bar_monitor} = Process.spawn_monitor(Pinger, :ping, ["pong"])
-    foo <- {bar, "start", 0}
-    wait [foo, bar]
+    limit = 5
+    {foo, _foo_monitor} = Process.spawn_monitor(Pinger, :ping, ["ping", limit])
+    {bar, _bar_monitor} = Process.spawn_monitor(Pinger, :ping, ["pong", limit])
+    {baz, _baz_monitor} = Process.spawn_monitor(Pinger, :ping, ["pung", limit])
+    foo <- {[bar, baz, foo], "start", 0}
+    wait [foo, bar, baz]
   end
 
   @doc "Waits for all processes to finish before exiting."
