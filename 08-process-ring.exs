@@ -16,7 +16,7 @@ defmodule Pinger do
         ping(echo, limit)
 
       # over our limit of messages, send :ok around the ring
-      {[next | rest], _, count} ->
+      {[next | rest], _, _} ->
         next <- {rest, :ok}
 
       # someone told us to stop, so pass along the message
