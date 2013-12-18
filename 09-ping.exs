@@ -20,7 +20,7 @@ defmodule Subnet do
   @doc "Ping all IPs in a class-C subnet and return a Dict with results."
   def ping(subnet) do
     all = ips(subnet)
-    Enum.map all, fn ip ->
+    Enum.each all, fn ip ->
       Process.spawn(Ping, :ping_async, [ip, self])
     end
     _wait HashDict.new, Enum.count(all)
