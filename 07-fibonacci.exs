@@ -36,7 +36,7 @@ defmodule Fib2 do
 
   def fib2(acc, 0), do: Enum.reverse(acc)
 
-  def fib2([first | [second | tail]], n) do
+  def fib2([first, second | tail], n) do
     fib2([first + second] ++ [first, second] ++ tail, n - 1)
   end
 end
