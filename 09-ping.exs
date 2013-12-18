@@ -21,7 +21,7 @@ defmodule Subnet do
   def ping(subnet) do
     all = ips(subnet)
     Enum.map all, fn ip ->
-      Process.spawn_monitor(Ping, :ping_async, [ip, self])
+      Process.spawn(Ping, :ping_async, [ip, self])
     end
     _wait HashDict.new, Enum.count(all)
   end
