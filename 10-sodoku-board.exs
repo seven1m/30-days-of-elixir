@@ -25,7 +25,7 @@ defmodule SodokuBoard do
     col = map board, fn row -> at(row, index) end
     sort(col) == to_list(1..max) and _cols_solved?(board, index-1)
   end
-  defp _cols_solved?(board, -1), do: true
+  defp _cols_solved?(_, -1), do: true
 end
 
 ExUnit.start
