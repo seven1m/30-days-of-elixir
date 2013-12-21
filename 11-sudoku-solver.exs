@@ -1,7 +1,37 @@
 Code.load_file("./10-sudoku-board.exs")
 
 defmodule SudokuSolver do
-  @moduledoc "Brute force solves a Sudoku puzzle."
+  @moduledoc """
+  Brute force solve a Sudoku puzzle.
+
+  This module does not concern itself with input/output -- it's up to you to feed
+  it a list of lists that represents the board, where `nil` is used to indicate a blank.
+
+  Here is a very small board to be solved:
+
+    iex> board = [[1,   nil, 3  ],
+                  [3,   nil, 2  ],
+                  [nil, 3,   nil]]
+
+  The solve/1 method accepts the board and returns it solved:
+
+    iex> SudokuSolver.solve(board)
+    [[1, 2, 3],
+     [3, 1, 2],
+     [2, 3, 1]]
+
+  The way it works is by first determining possible solutions. Each solution is determined
+  by first building a list of non-used numbers for each row, e.g. in the sample board
+  above, the missing number in the first row is 2, second row is 1, and third row is 1 and 2.
+
+  Then, these "possibles" are combined to find possible combinations. For the sample board above,
+  possible combinations (solutions) are: [2, 1, 1, 2] and [2, 1, 2, 1].
+
+  From there, we simply brute force check each solution against the board to see if it's solved.
+
+  In effect, we are using logic to find possible solutions that work for each *row*, then we
+  use brute force to check the solutions against each *column*.
+  """
 
   import Enum
 
@@ -51,7 +81,7 @@ defmodule SudokuSolver do
   def apply_solution(board, []), do: board
 
   @doc """
-  Returns all possible combinations for solving the board.
+  Returns possible combinations for solving the board.
 
   ## Example
 
