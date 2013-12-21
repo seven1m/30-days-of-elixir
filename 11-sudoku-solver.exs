@@ -24,8 +24,8 @@ defmodule SudokuSolver do
   by first building a list of non-used numbers for each row, e.g. in the sample board
   above, the missing number in the first row is 2, second row is 1, and third row is 1 and 2.
 
-  Then, these "possibles" are combined to find possible combinations. For the sample board above,
-  possible combinations (solutions) are: [2, 1, 1, 2] and [2, 1, 2, 1].
+  Then, these "possibles" are combined to find possible solutions. For the sample board above,
+  possible solutions are: [2, 1, 1, 2] and [2, 1, 2, 1].
 
   From there, we simply brute force check each solution against the board to see if it's solved.
 
