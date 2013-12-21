@@ -4,6 +4,9 @@ defmodule SudokuSolver do
   @moduledoc """
   Brute force solve a Sudoku puzzle.
 
+  TODO this is not a feasible approach for a 9x9 board since it generates too many combinations.
+  I will be working on a better solution soon.
+
   This module does not concern itself with input/output -- it's up to you to feed
   it a list of lists that represents the board, where `nil` is used to indicate a blank.
 
