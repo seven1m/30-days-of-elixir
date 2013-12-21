@@ -1,4 +1,4 @@
-defmodule SodokuBoard do
+defmodule SudokuBoard do
   @moduledoc "Functions to interrogate a board."
 
   import Enum
@@ -30,10 +30,10 @@ end
 
 ExUnit.start
 
-defmodule SodokuBoardTest do
+defmodule SudokuBoardTest do
   use ExUnit.Case
 
-  import SodokuBoard
+  import SudokuBoard
 
   test "solved? on solved board" do
     board = [
