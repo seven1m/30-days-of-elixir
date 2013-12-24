@@ -270,10 +270,10 @@ if Enum.first(System.argv) == "--test" do
 
     test "setup" do
       dealer = Process.spawn_monitor Player, :start_game, []
-      :timer.sleep(100)
-      two    = spawn Player, :join,       []
-      three  = spawn Player, :join,       []
-      four   = spawn Player, :join,       []
+      :timer.sleep(100) # TODO why is this necessary?
+      two    = spawn Player, :join, []
+      three  = spawn Player, :join, []
+      four   = spawn Player, :join, []
       wait
     end
 
