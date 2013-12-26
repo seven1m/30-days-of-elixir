@@ -3,16 +3,6 @@ defmodule SudokuSolver do
   Solves 9x9 Sudoku puzzles, Peter Norvig style.
 
   http://norvig.com/sudoku.html
-
-  This is pretty much a straight port of Peter's original Python code,
-  so it's not necessarily very idiomatic Elixir I'm afraid.
-
-  Also, it's horribly inefficient compared to the Python version, since
-  it doesn't memoize any of the base data structures. (It takes 30 seconds
-  on my machine to solve the "hard" puzzle whereas the Python version can
-  do it in under a second.)
-
-  I may come back and optimize this at some point if I get ambitious.
   """
 
   @size 9
@@ -20,6 +10,9 @@ defmodule SudokuSolver do
   @cols '123456789'
 
   import Enum
+
+  # used to cache all squares, units, and peer relationships
+  defrecord Board, squares: nil, units: nil, peers: nil
 
   def cross(list_a, list_b) do
     lc a inlist list_a, b inlist list_b, do: [a] ++ [b]
@@ -76,21 +69,21 @@ defmodule SudokuSolver do
   Convert grid to a Dict of possible values, {square: digits}, or
   return false if a contradiction is detected.
   """
-  def parse_grid(grid) do
+  def parse_grid(grid, board) do
     # To start, every square can be any digit; then assign values from the grid.
-    values = HashDict.new(lc s inlist squares, do: {s, @cols})
-    _parse_grid(values, Dict.to_list(grid_values(grid)))
+    values = HashDict.new(lc s inlist board.squares, do: {s, @cols})
+    _parse_grid(values, Dict.to_list(grid_values(grid)), board)
   end
 
-  defp _parse_grid(values, [{square, value} | rest]) do
-    values = _parse_grid(values, rest)
+  defp _parse_grid(values, [{square, value} | rest], board) do
+    values = _parse_grid(values, rest, board)
     if value in '0.' do
       values
     else
-      assign(values, square, value)
+      assign(values, square, value, board)
     end
   end
-  defp _parse_grid(values, []), do: values
+  defp _parse_grid(values, [], _), do: values
 
   @doc """
   Convert grid into a Dict of {square: char} with '0' or '.' for empties.
@@ -105,67 +98,68 @@ defmodule SudokuSolver do
   Eliminate all the other values (except d) from values[s] and propagate.
   Return values, except return false if a contradiction is detected.
   """
-  def assign(values, s, d) do
+  def assign(values, s, d, board) do
     values = Dict.put(values, s, [d])
-    p = Dict.to_list(Dict.get(peers, s))
-    eliminate(values, p, [d])
+    p = Dict.to_list(Dict.get(board.peers, s))
+    eliminate(values, p, [d], board)
   end
 
   @doc """
-  Eliminate d from values[s]; propagate when values or places <= 2.
-  Return values, except return false if a contradiction is detected.
+  Eliminate values from given squares and propagate.
   """
-  def eliminate(values, [], _), do: values
-  def eliminate(values, [square | rest_squares], vals_to_remove) do
+  def eliminate(values, squares, vals_to_remove, board) do
+    reduce_if_truthy squares, values, fn square, values ->
+      eliminate_vals_from_square(values, square, vals_to_remove, board)
+    end
+  end
+
+  # Remove value(s) from a square, then:
+  # (1) If a square s is reduced to one value, then eliminate it from the peers.
+  # (2) If a unit u is reduced to only one place for a value d, then put it there.
+  defp eliminate_vals_from_square(values, square, vals_to_remove, board) do
     vals = Dict.get(values, square)
     if Set.intersection(HashSet.new(vals), HashSet.new(vals_to_remove)) |> any? do
-      vals = _eliminate(vals, square, vals_to_remove)
-      values = Dict.put(values, square, vals)
-      # (1) If a square s is reduced to one value, then eliminate it from the peers.
-      values = cond do
-        count(vals) == 0 -> false # contradiction: removed last value
-        count(vals) == 1 -> eliminate(values, Dict.to_list(Dict.get(peers, square)), vals)
-        true -> values
+      vals = reduce vals_to_remove, vals, fn val, vals -> List.delete(vals, val) end
+      if length(vals) == 0 do
+        # contradiction, removed last value
+        false
+      else
+        values = Dict.put(values, square, vals)
+        values = if length(vals) == 1 do
+          # eliminate value(s) from the peers.
+          eliminate(values, Dict.to_list(Dict.get(board.peers, square)), vals, board)
+        else
+          values
+        end
+        # eliminate value(s) from units
+        eliminate_from_units(values, Dict.get(board.units, square), vals_to_remove, board)
       end
-      # (2) If a unit u is reduced to only one place for a value d, then put it there.
-      values = eliminate_vals_from_units(values, Dict.get(units, square), vals_to_remove)
+    else
+      values
     end
-    values && eliminate(values, rest_squares, vals_to_remove)
   end
 
-  defp _eliminate(vals, square, [val | rest]) do
-    vals = List.delete(vals, val)
-    _eliminate(vals, square, rest)
-  end
-  defp _eliminate(vals, _, []), do: vals
-
-  # FIXME eliminate_vals_from_units/3 and eliminate_from_unit/3 would be a pretty simple
-  # nested for loop in any OO language. If it weren't for the needed behavior of short-circuiting
-  # when we fail to apply a solution, this could be a pretty simple list comprehension. :-(
-  # Probably there is some higher-order function I could build to simplify this, but the
-  # solution isn't clear to this Functional Programming noob.
-  defp eliminate_vals_from_units(false, _, _), do: false
-  defp eliminate_vals_from_units(values, [unit | rest_units], vals_to_remove) do
-    values = eliminate_from_unit(values, unit, vals_to_remove)
-    eliminate_vals_from_units(values, rest_units, vals_to_remove)
-  end
-  defp eliminate_vals_from_units(values, [], _), do: values
-
-  defp eliminate_from_unit(false, _, _), do: false
-  defp eliminate_from_unit(values, unit, [val | rest]) do
-    dplaces = lc s inlist unit, val in Dict.get(values, s), do: s
-    values = cond do
-      empty?(dplaces) ->
-        false # contradiction: no place for this value
-      count(dplaces) == 1 ->
-        # d can only be in one place in unit; assign it there
-        assign(values, at(dplaces, 0), val)
-      true ->
-        values
+  # If a unit u is reduced to only one place for a value d, then put it there.
+  defp eliminate_from_units(values, units, vals_to_remove, board) do
+    reduce_if_truthy units, values, fn unit, values ->
+      reduce_if_truthy vals_to_remove, values, fn val, values ->
+        dplaces = lc s inlist unit, val in Dict.get(values, s), do: s
+        case length(dplaces) do
+          0 -> false                                      # contradiction: no place for this value
+          1 -> assign(values, at(dplaces, 0), val, board) # d can only be in one place in unit; assign it there
+          _ -> values
+        end
+      end
     end
-    eliminate_from_unit(values, unit, rest)
   end
-  defp eliminate_from_unit(values, _, []), do: values
+
+  # Similar to Enum.reduce/3 except it won't continue to call the work function
+  # if the accumulator becomes false or nil.
+  defp reduce_if_truthy(coll, acc, fun) do
+    reduce coll, acc, fn i, a ->
+      a && fun.(i, a)
+    end
+  end
 
   @doc """
   Given a puzzle char list, find the solution and return as a char list.
@@ -173,9 +167,10 @@ defmodule SudokuSolver do
   Use display/1 to print the grid as a square.
   """
   def solve(grid) do
+    board = Board[squares: squares, units: units, peers: peers]
     grid
-      |> parse_grid
-      |> search
+      |> parse_grid(board)
+      |> search(board)
       |> flatten
   end
 
@@ -191,8 +186,8 @@ defmodule SudokuSolver do
   @doc """
   Using depth-first search and propagation, try all possible values.
   """
-  def search(false), do: false
-  def search(values) do
+  def search(false, _), do: false
+  def search(values, board) do
     if all?(squares, fn s -> count(Dict.get(values, s)) == 1 end) do
       values # solved!
     else
@@ -202,7 +197,7 @@ defmodule SudokuSolver do
         |> sort(fn {_, c1}, {_, c2} -> c1 < c2 end)
         |> first
       find_value Dict.get(values, square), fn d ->
-        assign(values, square, d) |> search
+        assign(values, square, d, board) |> search(board)
       end
     end
   end
@@ -224,12 +219,6 @@ defmodule SudokuSolverTest do
   use ExUnit.Case
 
   import SudokuSolver
-
-  test "parse_grid" do
-    grid1 = '003020600900305001001806400008102900700000008006708200002609500800203009005010300'
-    assert Dict.get(parse_grid(grid1), 'A1') == '4'
-    assert Dict.get(parse_grid(grid1), 'A3') == '3'
-  end
 
   def print(grid, solved) do
     IO.puts "puzzle-----------"
