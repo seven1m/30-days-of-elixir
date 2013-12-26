@@ -2,6 +2,8 @@ defmodule Table do
   @moduledoc """
   h2. Problem
 
+  http://rosettacode.org/wiki/Dining_philosophers
+
   Five philosophers, Aristotle, Kant, Spinoza, Marx, and Russell (the tasks) spend their time
   thinking and eating spaghetti. They eat at a round table with five individual seats.
   For eating each philosopher needs two forks (the resources). There are five forks on the table,
