@@ -54,6 +54,32 @@ defmodule Tree do
       {{num, path}, Enum.at(row, index), Enum.at(row, index+1)}
     end
   end
+
+  def pretty_print(filename) do
+    tree = Tree.from_file(filename)
+    {sum, path} = Tree.maximal_path(tree)
+
+    IO.puts "maximal sum = #{sum}"
+
+    size = length(Enum.at(tree, 0))
+
+    tree
+      |> Enum.reverse
+      |> Enum.with_index
+      |> Enum.each(fn {row, row_index} ->
+        if rem(row_index, 2) == 0, do: IO.write(" ")
+        String.duplicate("  ", div(size - length(row), 2)) |> IO.write
+        (lc {_, [p | _]} inlist row do
+          if p == Enum.at(path, row_index) do
+            "\e[31mx"
+          else
+            "\e[32mo"
+          end
+        end)
+          |> Enum.join(" ")
+          |> IO.puts
+      end)
+  end
 end
 
 ExUnit.start
@@ -111,4 +137,8 @@ defmodule TreeTest do
     assert sum == 7273
     assert path == [0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 6, 6, 7, 8, 9, 10, 11, 12, 12, 12, 13, 13, 13, 14, 14, 15, 15, 16, 17, 17, 17, 18, 19, 20, 21, 22, 23, 24, 25, 25, 25, 26, 27, 27, 28, 29, 30, 31, 32, 32, 32, 32, 33, 33, 34, 35, 36, 36, 36, 36, 36, 36, 36, 37, 38, 39, 40, 41, 41, 42, 42, 42, 42, 42, 42, 42, 43, 43, 43, 44, 45, 45, 45, 45, 45, 45, 46, 46, 46, 46, 47, 47, 48, 49, 49, 50, 51, 52, 52, 53]
   end
+
+  def path, do: @path
 end
+
+Tree.pretty_print(TreeTest.path)
