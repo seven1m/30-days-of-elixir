@@ -171,14 +171,14 @@ defmodule SudokuSolver do
     grid
       |> parse_grid(board)
       |> search(board)
-      |> flatten
+      |> flatten(board)
   end
 
   @doc """
   Flatten a values Dict back into a single char list.
   """
-  def flatten(values) do
-    squares
+  def flatten(values, board) do
+    board.squares
       |> map(fn s -> Dict.get(values, s) end)
       |> concat
   end
@@ -188,11 +188,11 @@ defmodule SudokuSolver do
   """
   def search(false, _), do: false
   def search(values, board) do
-    if all?(squares, fn s -> count(Dict.get(values, s)) == 1 end) do
+    if all?(board.squares, fn s -> count(Dict.get(values, s)) == 1 end) do
       values # solved!
     else
       # Chose the unfilled square s with the fewest possibilities
-      {square, _count} = map(squares, &({&1, count(Dict.get(values, &1))}))
+      {square, _count} = map(board.squares, &({&1, count(Dict.get(values, &1))}))
         |> filter(fn {_, c} -> c > 1 end)
         |> sort(fn {_, c1}, {_, c2} -> c1 < c2 end)
         |> first
