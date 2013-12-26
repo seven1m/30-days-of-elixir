@@ -28,18 +28,31 @@ defmodule Tree do
       |> Enum.map(fn row ->
         lc num inlist String.split(row, " "), do: binary_to_integer(num)
       end)
+      |> Enum.map(fn row -> append_index(row) end)
   end
 
   def reduce_row(row, comparison_row) do
-    lc {main, opt1, opt2} inlist pairs(row, comparison_row) do
-      Enum.max([main + opt1, main + opt2])
+    lc {{main, index}, {opt1, index1}, {opt2, index2}} inlist pairs(row, comparison_row) do
+      sum1 = main + opt1
+      sum2 = main + opt2
+      if sum1 > sum2 do
+        {sum1, index ++ index1}
+      else
+        {sum2, index ++ index2}
+      end
+    end
+  end
+
+  def append_index(row) do
+    lc {num, index} inlist Enum.with_index(row) do
+      {num, [index]}
     end
   end
 
   def pairs(row, comparison_row) do
-    lc {num, index} inlist Enum.with_index(comparison_row) do
-      [{num, Enum.at(row, index), Enum.at(row, index+1)}]
-    end |> List.flatten
+    lc {num, path = [index | _]} inlist comparison_row do
+      {{num, path}, Enum.at(row, index), Enum.at(row, index+1)}
+    end
   end
 end
 
@@ -53,21 +66,49 @@ defmodule TreeTest do
   test "read file" do
     tree = Tree.from_file(@path)
     assert length(tree) == 100
-    assert Enum.at(tree, 99) == [59]
+    assert Enum.at(tree, 99) == [{59, [0]}]
+  end
+
+  test "append index" do
+    assert Tree.append_index([1, 2, 3]) == [{1, [0]}, {2, [1]}, {3, [2]}]
   end
 
   test "pairs" do
-    assert Tree.pairs([8, 5, 9, 3], [2, 4, 6]) == [{2, 8, 5}, {4, 5, 9}, {6, 9, 3}]
+    row1 = [{2, [0]}, {4, [1]}, {6, [2]}]
+    row2 = [{8, [0]}, {5, [1]}, {9, [2]}, {3, [3]}]
+    assert Tree.pairs(row2, row1) == [
+      {{2, [0]}, {8, [0]}, {5, [1]}},
+      {{4, [1]}, {5, [1]}, {9, [2]}},
+      {{6, [2]}, {9, [2]}, {3, [3]}},
+    ]
   end
 
   test "reduce row" do
-    row1 = [30, 11, 85, 31, 34, 71, 13, 48, 05, 14, 44, 03, 19, 67, 23]
-    row2 = [23, 33, 44, 81, 80, 92, 93, 75, 94, 88, 23, 61, 39, 76, 22, 03]
-    assert Tree.reduce_row(row2, row1) == [63, 55, 166, 112, 126, 164, 106, 142, 99, 102, 105, 64, 95, 143, 45]
+          row1 = [{30, [0]}, {11, [1]}, {85, [2]}, {31, [3]}, {34, [4]}, {71, [5]}, {13, [6]}, {48, [7]}, {05, [8]}, {14, [9]}, {44, [10]}, {03, [11]}, {19, [12]}, {67, [13]}, {23, [14]}]
+    row2 = [{23, [0]}, {33, [1]}, {44, [2]}, {81, [3]}, {80, [4]}, {92, [5]}, {93, [6]}, {75, [7]}, {94, [8]}, {88, [9]}, {23, [10]}, {61, [11]}, {39, [12]}, {76, [13]}, {22, [14]}, {03, [15]}]
+    assert Tree.reduce_row(row2, row1) == [
+      {63,  [ 0,  1]},
+      {55,  [ 1,  2]},
+      {166, [ 2,  3]},
+      {112, [ 3,  3]},
+      {126, [ 4,  5]},
+      {164, [ 5,  6]},
+      {106, [ 6,  6]},
+      {142, [ 7,  8]},
+      {99,  [ 8,  8]},
+      {102, [ 9,  9]},
+      {105, [10, 11]},
+      {64,  [11, 11]},
+      {95,  [12, 13]},
+      {143, [13, 13]},
+      {45,  [14, 14]},
+    ]
   end
 
   test "maximal path" do
     tree = Tree.from_file(@path)
-    assert Tree.maximal_path(tree) == 7273
+    {sum, path} = Tree.maximal_path(tree)
+    assert sum == 7273
+    assert path == [0, 0, 0, 1, 2, 3, 4, 4, 5, 5, 6, 6, 7, 8, 9, 10, 11, 12, 12, 12, 13, 13, 13, 14, 14, 15, 15, 16, 17, 17, 17, 18, 19, 20, 21, 22, 23, 24, 25, 25, 25, 26, 27, 27, 28, 29, 30, 31, 32, 32, 32, 32, 33, 33, 34, 35, 36, 36, 36, 36, 36, 36, 36, 37, 38, 39, 40, 41, 41, 42, 42, 42, 42, 42, 42, 42, 43, 43, 43, 44, 45, 45, 45, 45, 45, 45, 46, 46, 46, 46, 47, 47, 48, 49, 49, 50, 51, 52, 52, 53]
   end
 end
