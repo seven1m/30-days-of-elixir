@@ -1,7 +1,6 @@
 # just playing with inets - nothing special
 
 defmodule WebServer do
-
   def run do
     :inets.start()
     {:ok, pid} = :inets.start :httpd, [
