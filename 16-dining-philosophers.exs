@@ -50,17 +50,7 @@ defmodule Table do
     spawn(Dine, :dine, [Philosopher[name: "Marx"     ], table])
     spawn(Dine, :dine, [Philosopher[name: "Russell"  ], table])
 
-    wait # TODO why is this necessary? (I thought spawn_link would hold open the parent process.)
-  end
-
-  def wait do
-    receive do
-      {:DOWN, _, _, _, _} ->
-        :quit
-      msg ->
-        IO.puts inspect msg
-        wait
-    end
+    receive do: (_ -> :ok)
   end
 
   def manage_resources(forks, waiting // []) do
