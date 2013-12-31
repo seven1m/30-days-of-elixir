@@ -32,7 +32,7 @@ defmodule PrimeFactorsServer do
   import PrimeFactors
 
   def start_link do
-    :gen_server.start_link(__MODULE__, [], [])
+    :gen_server.start_link({:local, :prime_factors}, __MODULE__, [], [])
   end
 
   def init(_args) do
