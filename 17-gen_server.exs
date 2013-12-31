@@ -31,6 +31,10 @@ defmodule PrimeFactorsServer do
 
   import PrimeFactors
 
+  def start_link do
+    :gen_server.start_link(__MODULE__, [], [])
+  end
+
   def init(_args) do
     {:ok, []}
   end
@@ -71,7 +75,7 @@ defmodule PrimeFactorsTest do
   end
 
   test "async" do
-    {:ok, pid} = :gen_server.start_link(PrimeFactorsServer, [], [])
+    {:ok, pid} = PrimeFactorsServer.start_link
     :gen_server.cast(pid, 10)
     :gen_server.cast(pid, 100)
     :gen_server.cast(pid, 1000)
