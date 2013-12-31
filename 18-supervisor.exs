@@ -18,7 +18,7 @@ end
 
 
 # to use:
-# iex 19-supervisor.exs
+# iex 18-supervisor.exs
 # iex> {:ok, pid} = PrimeFactorsServer.Sup.start_link
 #
 # iex> :gen_server.call(:prime_factors, 100)
