@@ -1,4 +1,15 @@
+# I wanted to learn about the GenServer.Behaviour, so:
+# 1. first wrote a function to return prime factors of a given number
+# 2. then wrapped that in a "server" that handles both sync and async calls
+
 defmodule PrimeFactors do
+  @moduledoc """
+  Calculate prime factors of any number given.
+  """
+
+  @doc """
+  Given a number, return a list of prime factors.
+  """
   def prime_factors(number, div // 2, factors // []) do
     cond do
       prime?(number) ->
@@ -10,6 +21,9 @@ defmodule PrimeFactors do
     end
   end
 
+  @doc """
+  Given a number, return true if the number is prime.
+  """
   def prime?(2), do: true
 
   def prime?(number) do
@@ -27,6 +41,10 @@ defmodule PrimeFactors do
 end
 
 defmodule PrimeFactorsServer do
+  @moduledoc """
+  Wrap the PrimeFactors.prime_factors functionality in a server.
+  """
+
   use GenServer.Behaviour
 
   import PrimeFactors

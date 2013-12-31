@@ -1,3 +1,6 @@
+# The goal here is to learn (a tiny bit) about the Supervisor.Behaviour
+# We simply fire up the server from exercise 17 and restart it on failure.
+
 Code.load_file("./17-gen_server.exs")
 
 defmodule PrimeFactorsServer.Sup do
