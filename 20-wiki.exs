@@ -9,6 +9,8 @@ defmodule Wiki do
     To run:
 
     $ iex 20-wiki.exs
+
+    ... then point your browser to http://localhost:3000
   """
 
   defrecord :mod, Record.extract(:mod, from_lib: "inets/include/httpd.hrl")
@@ -40,7 +42,7 @@ defmodule Wiki do
         end
       Regex.match?(@edit_path, name) ->
         name = Regex.replace(%r/\/edit$/, name, "")
-        render_page(name, true)
+        render_page(name, :edit)
       true ->
         response(404, 'bad path')
     end
@@ -51,11 +53,11 @@ defmodule Wiki do
     response code, body, [location: path]
   end
 
-  def render_page(name, edit // false) do
-    case {edit, File.read(page_path(name))} do
-      {true, {:ok, body}} ->
+  def render_page(name, action // :show) do
+    case {action, File.read(page_path(name))} do
+      {:edit, {:ok, body}} ->
         response 200, edit_page_form(name, body) |> bitstring_to_list
-      {false, {:ok, body}} ->
+      {:show, {:ok, body}} ->
         response 200, body |> format(name) |> bitstring_to_list
       _ ->
         response 404, edit_page_form(name) |> bitstring_to_list
