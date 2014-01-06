@@ -9,7 +9,7 @@ defmodule WebServer do
 
     h2. Usage
 
-      $ iex 21-socket.exs
+      $ iex 21-socket-server.exs
 
     Then visit http://localhost:3000. You should see something like:
 
