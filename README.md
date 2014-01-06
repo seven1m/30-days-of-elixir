@@ -6,6 +6,6 @@ I intend to write a blog series using this code, but first gotta writes the code
 
 ## Copyright & License
 
-Copyright (c) 2013, [Tim Morgan](http://timmorgan.org)
+Copyright (c) 2014, [Tim Morgan](http://timmorgan.org)
 
 Licensed under MIT, see LICENSE file.
