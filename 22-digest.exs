@@ -9,6 +9,8 @@
 #
 # * Erlang/Elixir don't have a sha1 method built-in???
 # * Erlang/Elixir don't have a built-in binary-to-hex conversion???
+# * Loading Erlang code was a bit weird. I should have figured out
+#   how to compile erl files within the code (not the terminal)
 #
 # Dude, where's my expansive standard library?!
 
@@ -30,5 +32,4 @@ defmodule MiscTest do
     # so again Mr. Felix to the rescue!
     assert :crypto.hash(:md5, 'foo') |> :sha1.bin2hex == 'ACBD18DB4CC2F85CEDEF654FCCC4A4D8'
   end
-
 end
