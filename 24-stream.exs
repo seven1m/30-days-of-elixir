@@ -3,20 +3,14 @@ defmodule Fib do
     Lazy Fibonacci Sequence
   """
 
-  defrecord FibVal, val: 0, next: 1
-
   @doc """
-    Return a lazy sequence of FibVals.
+    Return a lazy sequence of Fibonacci numbers
 
-    To get the values, use Enum.map &(&1.val)
-
-      iex> Fib.fib |> Enum.take(10) |> Enum.map &(&1.val)
+      iex> Fib.fib |> Enum.take(10)
       [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
   """
   def fib do
-    Stream.iterate FibVal.new, fn FibVal[val: val, next: next] ->
-      FibVal.new(val: next, next: val + next)
-    end
+    Stream.unfold({0, 1}, fn {a, b} -> {a, {b, a + b}} end)
   end
 end
 
