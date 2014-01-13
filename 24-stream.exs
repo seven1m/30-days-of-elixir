@@ -35,7 +35,7 @@ end
 
 ExUnit.start
 
-defmodule RecursionTest do
+defmodule FibTest do
   use ExUnit.Case
   doctest Fib
 end
