@@ -71,13 +71,13 @@ defmodule Dealer do
   end
 
   defp deal([player | rest_players], [card | rest_cards]) do
-    player <- {:deal, card}
+    send player, {:deal, card}
     deal(rest_players ++ [player], rest_cards)
   end
   defp deal(_, []), do: :ok
 
   defp signal_start(players) do
-    Enum.each players, fn p -> p <- :start end
+    Enum.each players, fn p -> send(p, :start) end
   end
 
   defp wait_for_plays(players, cards_played // [], tricks_played // 0) when tricks_played < 13 do
@@ -89,11 +89,11 @@ defmodule Dealer do
         if length(cards_played) == 4 do
           {winner, _} = trick_winner(cards_played)
           broadcast(players, {:trick, winner})
-          winner <- :your_turn
+          send winner, :your_turn
           wait_for_plays(players, [], tricks_played + 1)
         else
           players = reorder_players(players, player)
-          Enum.first(players) <- :your_turn
+          send List.first(players), :your_turn
           wait_for_plays(players, cards_played, tricks_played)
         end
     end
@@ -108,11 +108,11 @@ defmodule Dealer do
     if Enum.any?(cards_played, fn {_, {s, _}} -> s == "Spades" end) do
       sort_cards(cards_played)
         |> Enum.filter(fn {_, {s, _}} -> s == "Spades" end)
-        |> Enum.first
+        |> List.first
     else
       sort_cards(cards_played)
         |> Enum.filter(fn {_, {s, _}} -> s == suit end)
-        |> Enum.first
+        |> List.first
     end
   end
 
@@ -123,7 +123,7 @@ defmodule Dealer do
   end
 
   defp broadcast(players, action) do
-    Enum.each players, fn p -> p <- action end
+    Enum.each players, fn p -> send(p, action) end
   end
 
   defp reorder_players(players = [first | rest], player) do
@@ -147,7 +147,7 @@ defmodule Player do
   """
   def start_game do
     dealer = spawn_link(Dealer, :start_game, [])
-    dealer <- {:join, self}
+    send dealer, {:join, self}
     IO.puts "I am #{inspect self}"
     wait_to_start(dealer)
   end
@@ -157,7 +157,7 @@ defmodule Player do
   """
   def join do
     dealer = :global.whereis_name(:dealer)
-    dealer <- {:join, self}
+    send dealer, {:join, self}
     IO.puts "I am #{inspect self}"
     wait_to_start(dealer)
   end
@@ -173,7 +173,7 @@ defmodule Player do
   end
 
   defp play(dealer, hand, card) do
-    dealer <- {:play, card, self}
+    send dealer, {:play, card, self}
     List.delete hand, card
   end
 
@@ -202,8 +202,8 @@ defmodule Player do
 
   defp select_and_play_card(dealer, hand) do
     show_hand(hand)
-    if Enum.first(System.argv) == "--test" do # TODO how to set debug mode based on args?
-      card = Enum.shuffle(hand) |> Enum.first
+    if List.first(System.argv) == "--test" do # TODO how to set debug mode based on args?
+      card = Enum.shuffle(hand) |> List.first
     else
       card = select_card(hand)
     end
@@ -232,7 +232,7 @@ defmodule Player do
   end
 end
 
-if Enum.first(System.argv) == "--test" do
+if List.first(System.argv) == "--test" do
   ExUnit.start
 
   defmodule SpadesTest do

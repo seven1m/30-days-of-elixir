@@ -14,16 +14,16 @@ defmodule Pinger do
       {[next | rest], msg, count} when count <= limit ->
         IO.puts "Received: #{inspect msg} (count #{count})"
         :timer.sleep(1000)
-        next <- {rest ++ [next], echo, count+1}
+        send next, {rest ++ [next], echo, count+1}
         ping(echo, limit)
 
       # over our limit of messages, send :ok around the ring
       {[next | rest], _, _} ->
-        next <- {rest, :ok}
+        send next, {rest, :ok}
 
       # someone told us to stop, so pass along the message
       {[next | rest], :ok} ->
-        next <- {rest, :ok}
+        send next, {rest, :ok}
 
       # done!
       {[], :ok} -> :ok
@@ -37,7 +37,7 @@ defmodule Spawner do
     {foo, _foo_monitor} = Process.spawn_monitor(Pinger, :ping, ["ping", limit])
     {bar, _bar_monitor} = Process.spawn_monitor(Pinger, :ping, ["pong", limit])
     {baz, _baz_monitor} = Process.spawn_monitor(Pinger, :ping, ["pung", limit])
-    foo <- {[bar, baz, foo], "start", 0}
+    send foo, {[bar, baz, foo], "start", 0}
     wait [foo, bar, baz]
   end
 

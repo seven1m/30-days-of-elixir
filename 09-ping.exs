@@ -10,7 +10,7 @@ defmodule Ping do
   Ping an IP asynchronously and send the {ip, exists} tuple to the parent
   """
   def ping_async(ip, parent) do
-    parent <- {ip, ping(ip)}
+    send parent, {ip, ping(ip)}
   end
 
   @doc """

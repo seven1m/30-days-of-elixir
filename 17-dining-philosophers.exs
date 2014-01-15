@@ -61,7 +61,7 @@ defmodule Table do
       if length(forks) >= 2 do
         [{pid, _} | waiting] = waiting
         [fork1, fork2 | forks] = forks
-        pid <- {:eat, [fork1, fork2]}
+        send pid, {:eat, [fork1, fork2]}
       end
     end
     receive do
@@ -79,7 +79,7 @@ end
 defmodule Dine do
 
   def dine(phil, table) do
-    table <- {:sit_down, self, phil}
+    send table, {:sit_down, self, phil}
     receive do
       {:eat, forks} ->
         phil = eat(phil, forks, table)
@@ -93,7 +93,7 @@ defmodule Dine do
     IO.puts "#{phil.name} is eating (count: #{phil.ate})"
     :timer.sleep(:random.uniform(1000))
     IO.puts "#{phil.name} is done eating"
-    table <- {:give_up_seat, forks, phil}
+    send table, {:give_up_seat, forks, phil}
     phil
   end
 
