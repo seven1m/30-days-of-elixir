@@ -26,7 +26,7 @@ defmodule Frank do
   defrecord :mod, Record.extract(:mod, from_lib: "inets/include/httpd.hrl")
 
   @doc """
-    Start the web server given the 
+    Start the web server given the app module.
   """
   def sing(module) do
     :inets.start()
