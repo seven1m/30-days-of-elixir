@@ -5,12 +5,12 @@ defmodule SetTest do
 
   test "to_list" do
     list = HashSet.new([1, 2, 2, 3]) |> HashSet.to_list
-    assert list == [1, 2, 3]
+    assert list == [2, 3, 1] # unintuitive ordering
   end
 
   test "union" do
     union = HashSet.new([1, 2, 3]) |> HashSet.union(HashSet.new([2, 3, 4]))
-    assert Set.to_list(union) == [1, 2, 3, 4]
+    assert Set.to_list(union) == [2, 3, 4, 1] # unintuitive, but somewhat more understandable
   end
 
   test "intersection" do
