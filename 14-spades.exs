@@ -4,20 +4,20 @@
 #
 # 1. In one terminal, start iex as the dealer:
 #
-#   iex --sname dealer 13-spades.exs
+#   iex --sname dealer 14-spades.exs
 #   iex> Player.start_game
 #
 # 2. In three more terminals, start iex as players:
 #
-#   iex --sname two 13-spades.exs
+#   iex --sname two 14-spades.exs
 #   iex> Node.connect(:dealer@localhost)
 #   iex> Player.join
 #
-#   iex --sname three 13-spades.exs
+#   iex --sname three 14-spades.exs
 #   iex> Node.connect(:dealer@localhost)
 #   iex> Player.join
 #
-#   iex --sname four 13-spades.exs
+#   iex --sname four 14-spades.exs
 #   iex> Node.connect(:dealer@localhost)
 #   iex> Player.join
 #
