@@ -72,8 +72,8 @@ defmodule Vector do
      iex> Vector.get(v, 10)
      "tim"
   """
-  def get(v, index) do
-    _get(vec(v, :children), hash(index))
+  def get(vec(children: children), index) do
+    _get(children, hash(index))
   end
 
   @doc """
