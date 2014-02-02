@@ -97,7 +97,7 @@ defmodule Wiki do
   end
 
   def page_path(name) do
-    Path.join("../support/wiki", name) |> Path.expand(__FILE__)
+    Path.join("support/wiki", name) |> Path.expand(__DIR__)
   end
 
   def save_page(name, data) do
