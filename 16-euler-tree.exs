@@ -18,7 +18,7 @@ defmodule Tree do
     row = reduce_row(row, comparison_row)
     maximal_path([row | rest_rows])
   end
-  def maximal_path([row]), do: Enum.first(row)
+  def maximal_path([row]), do: List.first(row)
 
   def from_file(filename) do
     File.read!(filename)
@@ -87,7 +87,7 @@ ExUnit.start
 defmodule TreeTest do
   use ExUnit.Case
 
-  @path Path.expand("../support/tree.txt", __FILE__)
+  @path Path.expand("support/tree.txt", __DIR__)
 
   test "read file" do
     tree = Tree.from_file(@path)
