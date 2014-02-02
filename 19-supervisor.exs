@@ -1,7 +1,7 @@
 # The goal here is to learn (a tiny bit) about the Supervisor.Behaviour
-# We simply fire up the server from exercise 17 and restart it on failure.
+# We simply fire up the server from exercise 18 and restart it on failure.
 
-Code.load_file("./17-gen_server.exs")
+Code.load_file("./18-gen_server.exs")
 
 defmodule PrimeFactorsServer.Sup do
   use Supervisor.Behaviour
@@ -18,7 +18,7 @@ end
 
 
 # to use:
-# iex 18-supervisor.exs
+# iex 19-supervisor.exs
 # iex> {:ok, pid} = PrimeFactorsServer.Sup.start_link
 #
 # iex> :gen_server.call(:prime_factors, 100)
@@ -32,7 +32,7 @@ end
 # ** Reason for termination ==
 # ** {badarg,
 # ...
-# ** (exit) {{:badarg, [{:math, :sqrt, ["a"], []}, {PrimeFactors, :prime?, 1, [file: '/tim/pp/30-days-of-elixir/17-gen_server.exs', line: 16]}, {PrimeFactors, :prime_factors, 3, [file: '/tim/pp/30-days-of-elixir/17-gen_server.exs', line: 4]}, {PrimeFactorsServer, :handle_call, 3, [file: '/tim/pp/30-days-of-elixir/17-gen_server.exs', line: 49]}, {:gen_server, :handle_msg, 5, [file: 'gen_server.erl', line: 585]}, {:proc_lib, :init_p_do_apply, 3, [file: 'proc_lib.erl', line: 239]}]}, {:gen_server, :call, [:prime_factors, "a"]}}
+# ** (exit) {{:badarg, [{:math, :sqrt, ["a"], []}, {PrimeFactors, :prime?, 1, [file: '/tim/pp/30-days-of-elixir/18-gen_server.exs', line: 16]}, {PrimeFactors, :prime_factors, 3, [file: '/tim/pp/30-days-of-elixir/18-gen_server.exs', line: 4]}, {PrimeFactorsServer, :handle_call, 3, [file: '/tim/pp/30-days-of-elixir/18-gen_server.exs', line: 49]}, {:gen_server, :handle_msg, 5, [file: 'gen_server.erl', line: 585]}, {:proc_lib, :init_p_do_apply, 3, [file: 'proc_lib.erl', line: 239]}]}, {:gen_server, :call, [:prime_factors, "a"]}}
 #     gen_server.erl:180: :gen_server.call/2
 #
 # iex> :gen_server.call(:prime_factors, 8)
