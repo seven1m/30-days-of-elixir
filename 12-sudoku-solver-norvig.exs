@@ -195,7 +195,7 @@ defmodule SudokuSolver do
       {square, _count} = map(board.squares, &({&1, count(Dict.get(values, &1))}))
         |> filter(fn {_, c} -> c > 1 end)
         |> sort(fn {_, c1}, {_, c2} -> c1 < c2 end)
-        |> first
+        |> List.first
       find_value Dict.get(values, square), fn d ->
         assign(values, square, d, board) |> search(board)
       end
