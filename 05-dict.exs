@@ -51,7 +51,7 @@ defmodule HashDictTest do
 
   test "put" do
     assert Dict.put(sample, :foo, 'bob') == HashDict.new(foo: 'bob', baz: 'quz')
-    assert Dict.put(sample, :far, 'bar') == HashDict.new(far: 'bar', foo: 'bar', baz: 'quz')
+    assert Dict.put(sample, :far, 'bar') == HashDict.new(foo: 'bar', baz: 'quz', far: 'bar')
   end
 
   test "values" do
