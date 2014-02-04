@@ -142,11 +142,11 @@ defmodule VectorTest do
     {microsecs, _} = :timer.tc fn ->
       List.duplicate("foo", @size)
     end
-    IO.puts "List creation took #{microsecs} microsecs" # 3,525 microsecs
+    IO.puts "List creation took #{microsecs} microsecs" # 3,462 microsecs
     list = List.duplicate("foo", @size)
     {microsecs, _} = :timer.tc fn ->
       Vector.new(list)
     end
-    IO.puts "Vector creation took #{microsecs} microsecs" # 265,647 microsecs
+    IO.puts "Vector creation took #{microsecs} microsecs" # 19,092 microsecs
   end
 end
