@@ -5,7 +5,7 @@ defmodule Vector do
   import Bitwise
 
   @bits 2
-  @width 1 <<< @bits # 32-way branching
+  @width 1 <<< @bits # 4-way branching
   @mask @width - 1
 
   defrecordp :vec, Vector, size: 0, depth: 0, tree: []
