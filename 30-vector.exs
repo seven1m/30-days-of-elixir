@@ -83,7 +83,7 @@ defmodule Vector do
 
   defp tree_from_list(list, depth) when depth > 1 do
     list
-      |> Enum.chunk(@width)
+      |> Enum.chunk(@width, @width, List.duplicate(nil, @width))
       |> tree_from_list(depth - 1)
   end
   defp tree_from_list(list, _), do: list
@@ -127,6 +127,8 @@ defmodule VectorTest do
   end
 
   test "new" do
+    v = Vector.new(List.duplicate(1, 5))
+    assert v == {Vector, 5, 2, [[1, 1, 1, 1], [1, nil, nil, nil]]}
     v = Vector.new(List.duplicate(1, 64))
     assert v == {Vector, 64, 3, [
       [[1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1]],
@@ -142,11 +144,25 @@ defmodule VectorTest do
     {microsecs, _} = :timer.tc fn ->
       List.duplicate("foo", @size)
     end
-    IO.puts "List creation took #{microsecs} microsecs" # 3,462 microsecs
+    IO.puts "List creation took #{microsecs} microsecs" # 2,815 microsecs
     list = List.duplicate("foo", @size)
     {microsecs, _} = :timer.tc fn ->
       Vector.new(list)
     end
-    IO.puts "Vector creation took #{microsecs} microsecs" # 19,092 microsecs
+    IO.puts "Vector creation took #{microsecs} microsecs" # 18,996 microsecs
+  end
+
+  test "access speed" do
+    list = List.duplicate("foo", @size)
+    {microsecs, _} = :timer.tc fn ->
+      assert Enum.at(list, @size-1) == "foo"
+    end
+    IO.puts "List access took #{microsecs} microsecs" # 997 microsecs
+    list = List.duplicate("foo", @size)
+    vector = Vector.new(list)
+    {microsecs, _} = :timer.tc fn ->
+      assert Vector.get(vector, @size-1) == "foo"
+    end
+    IO.puts "Vector access took #{microsecs} microsecs" # 3 microsecs
   end
 end
