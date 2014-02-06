@@ -20,17 +20,17 @@ A walk through the [Elixir](http://elixir-lang.org/) language, one made-up exerc
 
 ### Learning is a Process.
 
-**08-process-ring.exs** - TBW
+**08-process-ring.exs** - Sometimes a contrived example is the best way to focus on the technology. For now, let's just send messages around in a ring and see how this Process thing works.
 
-**09-ping.exs** - TBW
+**09-ping.exs** - Now let's build something useful! Wow, it's easy to launch as many processes as you have increments of work. When the work is finished, send a message back to the parent and he'll assemble the results. Cool!
 
 ### So, do you Sudoku?
 
-**10-sudoku-board.exs** - TBW
+**10-sudoku-board.exs** - No objects? Pshaaw! Who needs 'em - let's use simple lists to represent our Sudoku board. Easy!
 
-**11-sudoku-solver.exs** - TBW
+**11-sudoku-solver.exs** - Epic fail. Our code is pretty, but the algorithm is naive and too slow to use on a full-size board.
 
-**12-sudoku-solver-norvig.exs** - TBW
+**12-sudoku-solver-norvig.exs** - Time to bring out the big guns! Here we port Peter Norvig's Holy Grail of a Solver over to Elixir. We learn how to change imperative operations on mutable state to functional ones on immutable data. This solver is freakin' fast!
 
 ### Spades, cuz they look like little shovels!
 
