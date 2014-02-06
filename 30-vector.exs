@@ -85,11 +85,6 @@ defmodule Vector do
     6
   """
   def reduce(vec(size: size, depth: depth, tree: tree), acc, fun) do
-    # slow
-    #Enum.reduce 0..(size-1), acc, fn index, acc ->
-      #fun.(get(v, index), acc)
-    #end
-    # fast
     _reduce tree, depth-1, size, 0, acc, fun
   end
 
