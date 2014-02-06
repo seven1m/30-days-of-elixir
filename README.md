@@ -34,39 +34,39 @@ A walk through the [Elixir](http://elixir-lang.org/) language, one made-up exerc
 
 ### Spades, cuz they look like little shovels!
 
-**13-card-deck.exs** - TBW
+**13-card-deck.exs** - Let's see how we might represent a deck of cards. Easy, a list of tuples! We'll also build a higher-order function to deal out the cards to players.
 
-**14-spades.exs** - TBW
+**14-spades.exs** - They're aliiiiive! Processes connect to one another and send messages, across terminal windows, machines, even teh intarwebs! Let's put this to good use and build a multi-player game of Spades. Ace of Spades FTW!
 
 ### Tease your brain, but don't be a bully.
 
-**15-quine.exs** - TBW
+**15-quine.exs** - A quine is a program that prints its own source code. Let's build the smallest one we can using Elixir... sigils help a lot!
 
-**16-euler-tree.exs** - TBW
+**16-euler-tree.exs** - Project Euler problem 67 is a fun puzzle; let's solve it with a functional language! We'll make extensive use of list comprehensions in this one.
 
-**17-dining-philosophers.exs** - TBW
+**17-dining-philosophers.exs** - Pass the fork! The actor model makes certain problems a lot easier to reason about, and feeding some philosophers is one of them.
 
 ### OTP, hey you know me!
 
-**18-gen_server.exs** - TBW
+**18-gen_server.exs** - Here we move up a level and build a Prime Factors server using OTP GenServer behaviour.
 
-**19-supervisor.exs** - TBW
+**19-supervisor.exs** - This one is simple: when our Prime Factors server craps out, restart it. Easy!
 
 ### Let's build a web...
 
-**20-inets.exs** - TBW
+**20-inets.exs** - Erlang's built-in inets library is nothing to be amazed by, but it gets the job done. We'll simply announce ourselves to the world again, this time via HTTP.
 
-**21-wiki.exs** - TBW
+**21-wiki.exs** - Now let's build something useful, combining our knowledge of inets and some simple File IO to build a wiki web server.
 
-**22-socket-server.exs** - TBW
+**22-socket-server.exs** - "I don't always build web apps, but when I do, I use low-level sockets and parse the HTTP headers myself," said no one, ever. Turns out [gen_tcp](http://erlang.org/doc/man/gen_tcp.html) is pretty easy to use if you want to handle socket communication.
 
 ### What's this doing here?
 
-**23-digest.exs** - TBW
+**23-digest.exs** - Erlang/OTP has so many things to offer, yet simple hexdigest using sha1 isn't one of 'em. At least we get to learn one way to import external Erlang code and run it in Elixir, so not all is lost.
 
-**24-stream.exs** - TBW
+**24-stream.exs** - Let's build a better Fibonacci method using lazy streams. You can tell our understanding of the language has improved, as the amount of code to implement this is 1/10th of the size of our first foray into Fibonacci!
 
-**25-set.exs** - TBW
+**25-set.exs** - We'll learn about the built-in [HashSet](http://elixir-lang.org/docs/stable/HashSet.html) library, just for fun.
 
 ### The Rat Pack didn't have Macros.
 
