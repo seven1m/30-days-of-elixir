@@ -72,7 +72,7 @@ A walk through the [Elixir](http://elixir-lang.org/) language, one made-up exerc
 
 **26-frank.exs** - Here we'll make a brief incursion into the land of macros. In this excercise, we'll build a web DSL with custom syntax. This first try we'll just use a macro to write a method. `quote`/`unquote` confounds a bit.
 
-**27-frank-2.exs** - This version of Frank is only a little better, but let's our path matches contain any character and utilizes pattern matching to grab the right handler method. But here we're still struggling with `quote`/`unquote` et al. What does it all mean?
+**27-frank-2.exs** - This version of Frank is only a little better, but lets our path matches contain any character and utilizes pattern matching to grab the right handler method. But here we're still struggling with `quote`/`unquote` et al. What does it all mean?
 
 **28-frank-3.exs** - Macros are starting to make a little more sense now. The final version of Frank can handle patterns in the URL, e.g. `/foo/:id` and our macro code got simpler!
 
