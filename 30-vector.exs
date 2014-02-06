@@ -74,6 +74,35 @@ defmodule Vector do
     vec(size: size, depth: depth, tree: tree)
   end
 
+  @doc """
+  Given a vector, an accumulator, and a function, iterate over
+  each item in the vector passing the item and the accumulator
+  to the function. The function should return the modified
+  accumulator.
+
+    iex> v = Vector.new([1,2,3])
+    iex> Vector.reduce(v, 0, &(&2 + &1))
+    6
+  """
+  def reduce(vec(size: size, depth: depth, tree: tree), acc, fun) do
+    # slow
+    #Enum.reduce 0..(size-1), acc, fn index, acc ->
+      #fun.(get(v, index), acc)
+    #end
+    # fast
+    _reduce tree, depth-1, size, 0, acc, fun
+  end
+
+  defp _reduce(node, depth, size, index, acc, fun) when depth > 0 and is_list(node) do
+    Enum.reduce Enum.with_index(node), acc, fn {n, i}, acc ->
+      _reduce n, depth-1, size, index + (i * @width), acc, fun
+    end
+  end
+  defp _reduce(node, _, size, index, acc, fun) when is_list(node) do
+    Enum.reduce Enum.slice(node, 0..(size-index-1)), acc, fun
+  end
+  defp _reduce(_, _, _, _, acc, _), do: acc
+
   defp key(index, depth, indeces // []) when depth > 0 do
     level = (depth - 1) * @bits
     indeces = indeces ++ [(index >>> level) &&& @mask]
@@ -138,6 +167,12 @@ defmodule VectorTest do
     ]}
   end
 
+  test "reduce" do
+    v = Vector.new([1,2,3,4,5,6])
+    sum = Vector.reduce(v, 0, &(&1 + &2))
+    assert sum == 21
+  end
+
   @size 100_000
 
   test "creation speed" do
@@ -150,6 +185,20 @@ defmodule VectorTest do
       Vector.new(list)
     end
     IO.puts "Vector creation took #{microsecs} microsecs" # 18,996 microsecs
+  end
+
+  test "iteration speed" do
+    list = List.duplicate("foo", @size)
+    {microsecs, _} = :timer.tc fn ->
+      Enum.reduce list, 0, fn _, count -> count + 1 end
+    end
+    IO.puts "List traversal took #{microsecs} microsecs" # 1,605 microsecs
+    list = List.duplicate("foo", @size)
+    vector = Vector.new(list)
+    {microsecs, _} = :timer.tc fn ->
+      Vector.reduce vector, 0, fn _, count -> count + 1 end
+    end
+    IO.puts "Vector traversal took #{microsecs} microsecs" # 13,372 microsecs
   end
 
   test "access speed" do
