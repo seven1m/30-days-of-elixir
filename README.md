@@ -12,9 +12,9 @@ A walk through the [Elixir](http://elixir-lang.org/) language, one made-up exerc
 
 **04-list.exs** - What's a functional language without a List? Here we learn some simple list manipulation, and for awhile we can pretend lists are like our familiar Ruby arrays. :-)
 
-**05-dict.exs** - Dict and Keyword structures are a bit of a departure from the Hash in Ruby world. Sure, it's an associative array, but wrapping our minds around Keyword vs HashDict vs ListDict can be confusing. Luckily, it seems we can simplify by defaulting to [HashDict.new](http://elixir-lang.org/docs/stable/HashDict.html#new/0) and all the [Dict methods](http://elixir-lang.org/docs/stable/Dict.html) for manipulation.
+**05-dict.exs** - Dict and Keyword structures are a bit of a departure from the Hash in Ruby world. Sure, it's an associative array, but wrapping our minds around Keyword vs HashDict vs ListDict can be confusing. Luckily, it seems we can simplify by defaulting to [HashDict.new](http://elixir-lang.org/docs/stable/HashDict.html#new/0) and using the [Dict methods](http://elixir-lang.org/docs/stable/Dict.html) for manipulation.
 
-**06-record.exs** - Where are beloved objects? In functional programming, data is just data, and Elixir gives you the Record structure to organize it a bit. Records are a little like Struct from other imperative languages, except of course they are immutable!
+**06-record.exs** - Where are our beloved objects? In functional programming, data is just data, and Elixir gives you the Record structure to organize it a bit. Records are a little like Struct from other imperative languages, except of course they are immutable!
 
 **07-fibonacci.exs** - You learn recursion by using recursion! We learn about multiple methods of the same name, pattern matching, and guard clauses, cool! Finally we do it all over again, backwards! (Hey, why not?)
 
