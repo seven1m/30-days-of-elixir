@@ -78,9 +78,9 @@ A walk through the [Elixir](http://elixir-lang.org/) language, one made-up exerc
 
 ### You'll never learn if you don't Trie.
 
-**29-vector.exs** - TBW
+**29-vector.exs** - For our last couple of exercises, let's do something completly different! Elixir has a list data structure, but no [Vector](http://clojure.org/data_structures#Data Structures-Vectors (IPersistentVector)), so let's create one... our first attempt has us learning about Hash Array Mapped Trie (HAMT), and as it turns out, using this structure for a vector wasn't the best idea.
 
-**30-vector.exs** - TBW
+**30-vector.exs** - Take 2... Thanks to Jean Niklas L'orange's [excellent articles about Clojure's Vectors](http://hypirion.com/musings/understanding-persistent-vector-pt-1), we learn how to build a Bit Partitioned Vector Trie. And now, we have a Vector with constant-time access. Cool stuff!
 
 
 ## Copyright & License
