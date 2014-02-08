@@ -73,7 +73,7 @@ defmodule Vector do
      "tim"
   """
   def get(vec(children: children), index) do
-    _get(children, hash(index))
+    do_get(children, hash(index))
   end
 
   @doc """
@@ -85,7 +85,7 @@ defmodule Vector do
      "tim"
   """
   def put(v = vec(size: size, children: children), index, value) do
-    children = _put(children, hash(index), value)
+    children = do_put(children, hash(index), value)
     if index >= size do
       vec(size: index + 1, children: children)
     else
@@ -125,36 +125,36 @@ defmodule Vector do
   def from_list([], v, _), do: v
 
   # traversed down to a non-existent key
-  defp _get(nil, _) do
+  defp do_get(nil, _) do
     nil
   end
 
   # at the last node of our tree, so we should have a value!
-  defp _get({val, _}, []) do
+  defp do_get({val, _}, []) do
     val
   end
 
   # traverse down the tree to get the value
-  defp _get({_, children}, [pos | hash_rest]) do
+  defp do_get({_, children}, [pos | hash_rest]) do
     node = elem(children, pos)
-    _get(node, hash_rest)
+    do_get(node, hash_rest)
   end
 
   # at the last leaf of our branch, so store the value
   # FIXME our hash function will have collisions, so we really should
   # store duplicates properly here, but we don't yet
-  defp _put(_, [], value) do
+  defp do_put(_, [], value) do
     {value, @template}
   end
 
   # build a new branch
-  defp _put(nil, hash, value) do
-    _put({nil, @template}, hash, value)
+  defp do_put(nil, hash, value) do
+    do_put({nil, @template}, hash, value)
   end
 
   # traverse down the tree to store the value
-  defp _put({val, children}, [pos | hash_rest], value) do
-    tree = _put(elem(children, pos), hash_rest, value)
+  defp do_put({val, children}, [pos | hash_rest], value) do
+    tree = do_put(elem(children, pos), hash_rest, value)
     {val, set_elem(children, pos, tree)}
   end
 

@@ -31,7 +31,7 @@ defmodule Subnet do
     Enum.each all, fn ip ->
       Process.spawn(Ping, :ping_async, [ip, self])
     end
-    _wait HashDict.new, Enum.count(all)
+    wait HashDict.new, Enum.count(all)
   end
 
   @doc """
@@ -42,12 +42,12 @@ defmodule Subnet do
     Enum.to_list(1..254) |> Enum.map fn i -> "#{subnet}#{i}" end
   end
 
-  defp _wait(dict, 0), do: dict
-  defp _wait(dict, remaining) do
+  defp wait(dict, 0), do: dict
+  defp wait(dict, remaining) do
     receive do
       {ip, exists} ->
         dict = Dict.put(dict, ip, exists)
-        _wait dict, remaining-1
+        wait dict, remaining-1
     end
   end
 end

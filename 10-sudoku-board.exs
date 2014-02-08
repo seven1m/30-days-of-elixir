@@ -17,15 +17,15 @@ defmodule SudokuBoard do
 
   @doc "Returns true if all columns are solved."
   def cols_solved?(board) do
-    _cols_solved?(board, count(board)-1)
+    do_cols_solved?(board, count(board)-1)
   end
 
-  defp _cols_solved?(board, index) when index >= 0 do
+  defp do_cols_solved?(board, index) when index >= 0 do
     max = count(board)
     col = map board, fn row -> at(row, index) end
-    sort(col) == to_list(1..max) and _cols_solved?(board, index-1)
+    sort(col) == to_list(1..max) and do_cols_solved?(board, index-1)
   end
-  defp _cols_solved?(_, -1), do: true
+  defp do_cols_solved?(_, -1), do: true
 end
 
 ExUnit.start

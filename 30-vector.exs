@@ -50,7 +50,7 @@ defmodule Vector do
      "mac"
   """
   def get(vec(depth: depth, tree: tree), index) do
-    _get(tree, key(index, depth))
+    do_get(tree, key(index, depth))
   end
 
   @doc """
@@ -70,7 +70,7 @@ defmodule Vector do
       tree = [tree]
     end
     # attach node
-    tree = _put tree, key(index, depth), value
+    tree = do_put tree, key(index, depth), value
     vec(size: size, depth: depth, tree: tree)
   end
 
@@ -85,18 +85,18 @@ defmodule Vector do
     6
   """
   def reduce(vec(size: size, depth: depth, tree: tree), acc, fun) do
-    _reduce tree, depth-1, size, 0, acc, fun
+    do_reduce tree, depth-1, size, 0, acc, fun
   end
 
-  defp _reduce(node, depth, size, index, acc, fun) when depth > 0 and is_list(node) do
+  defp do_reduce(node, depth, size, index, acc, fun) when depth > 0 and is_list(node) do
     Enum.reduce Enum.with_index(node), acc, fn {n, i}, acc ->
-      _reduce n, depth-1, size, index + (i * @width), acc, fun
+      do_reduce n, depth-1, size, index + (i * @width), acc, fun
     end
   end
-  defp _reduce(node, _, size, index, acc, fun) when is_list(node) do
+  defp do_reduce(node, _, size, index, acc, fun) when is_list(node) do
     Enum.reduce Enum.slice(node, 0..(size-index-1)), acc, fun
   end
-  defp _reduce(_, _, _, _, acc, _), do: acc
+  defp do_reduce(_, _, _, _, acc, _), do: acc
 
   defp key(index, depth, indeces // []) when depth > 0 do
     level = (depth - 1) * @bits
@@ -112,20 +112,20 @@ defmodule Vector do
   end
   defp tree_from_list(list, _), do: list
 
-  defp _get(node, [idx | rest_key]) do
+  defp do_get(node, [idx | rest_key]) do
     node = Enum.at(node, idx)
-    _get(node, rest_key)
+    do_get(node, rest_key)
   end
-  defp _get(node, []), do: node
+  defp do_get(node, []), do: node
 
-  defp _put(tree, [idx | rest_key], value) do
-    rest = _put(Enum.at(tree, idx) || [], rest_key, value)
+  defp do_put(tree, [idx | rest_key], value) do
+    rest = do_put(Enum.at(tree, idx) || [], rest_key, value)
     if length(tree) <= idx do # expand this node
       tree = tree ++ List.duplicate(nil, idx - length(tree) + 1)
     end
     List.replace_at tree, idx, rest
   end
-  defp _put(_, [], value), do: value
+  defp do_put(_, [], value), do: value
 end
 
 ExUnit.start

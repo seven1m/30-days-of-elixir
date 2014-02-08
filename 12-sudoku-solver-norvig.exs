@@ -72,18 +72,18 @@ defmodule SudokuSolver do
   def parse_grid(grid, board) do
     # To start, every square can be any digit; then assign values from the grid.
     values = HashDict.new(lc s inlist board.squares, do: {s, @cols})
-    _parse_grid(values, Dict.to_list(grid_values(grid)), board)
+    do_parse_grid(values, Dict.to_list(grid_values(grid)), board)
   end
 
-  defp _parse_grid(values, [{square, value} | rest], board) do
-    values = _parse_grid(values, rest, board)
+  defp do_parse_grid(values, [{square, value} | rest], board) do
+    values = do_parse_grid(values, rest, board)
     if value in '0.' do
       values
     else
       assign(values, square, value, board)
     end
   end
-  defp _parse_grid(values, [], _), do: values
+  defp do_parse_grid(values, [], _), do: values
 
   @doc """
   Convert grid into a Dict of {square: char} with '0' or '.' for empties.
