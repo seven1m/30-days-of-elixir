@@ -43,6 +43,11 @@ defmodule HashDictTest do
     assert Dict.get(sample, :non_existent) == nil
   end
 
+  test "[]" do
+    assert sample[:foo] == 'bar'
+    assert sample[:non_existent] == nil
+  end
+
   test "fetch" do
     {:ok, val} = Dict.fetch(sample, :foo)
     assert val == 'bar'
