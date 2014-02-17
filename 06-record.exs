@@ -35,6 +35,10 @@ defmodule RecordTest do
     assert sample == {User, "kai@example.com", "trains"}
   end
 
+  test "property" do
+    assert sample.email == "kai@example.com"
+  end
+
   test "update" do
     u = sample
     u2 = u.update(email: "tim@example.com")
