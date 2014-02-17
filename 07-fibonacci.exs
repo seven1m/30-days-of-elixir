@@ -1,5 +1,9 @@
 defmodule Fib do
-  @moduledoc "Fibonacci Sequence function. Please note, I wrote this purely from memory -- I mean, I'm sure there's a more concise way to build this algorithm. :-)"
+  @moduledoc """
+  Fibonacci Sequence function.
+  Please note, I wrote this purely from memory --
+  I mean, I'm sure there's a more concise way to build this algorithm. :-)
+  """
 
   @seed [0, 1]
 
@@ -22,7 +26,11 @@ defmodule Fib do
 end
 
 defmodule Fib2 do
-  @moduledoc "Fibonacci Sequence function. This is my attempt to be more efficient by building the list backwards (and then reversing at the end)."
+  @moduledoc """
+  Fibonacci Sequence function.
+  This is my attempt to be more efficient by building the list
+  backwards (and then reversing at the end).
+  """
 
   @seed [1, 0]
 
