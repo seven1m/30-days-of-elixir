@@ -22,7 +22,7 @@ defmodule Fib do
 end
 
 defmodule Fib2 do
-  @moduledoc "Fibonacci Sequence function. This is my attempt to be more efficient by buliding the list backwards (and then reversing at the end)."
+  @moduledoc "Fibonacci Sequence function. This is my attempt to be more efficient by building the list backwards (and then reversing at the end)."
 
   @seed [1, 0]
 
