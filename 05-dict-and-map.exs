@@ -1,46 +1,18 @@
 # http://elixir-lang.org/docs/stable/Dict.html
-# http://elixir-lang.org/docs/stable/HashDict.html
-# http://elixir-lang.org/docs/stable/ListDict.html
+# http://elixir-lang.org/docs/stable/Map.html
 
 ExUnit.start
 
-# Keyword and ListDict work fairly interchangeably AFAICT
-# except Keyword can only have keys that are atoms
-# Dict can have any value as key
-
-defmodule KeywordTest do
+defmodule MapTest do
   use ExUnit.Case
 
   def sample do
-    [foo: 'bar', baz: 'quz']
+    %{foo: 'bar', baz: 'quz'}
   end
 
-  test "get" do
-    assert Keyword.get(sample, :foo) == 'bar'
-    assert Keyword.get(sample, :non_existent) == nil
-  end
-
-  test "put" do
-    assert Keyword.put(sample, :foo, 'bob') == [foo: 'bob', baz: 'quz']
-    assert Keyword.put(sample, :far, 'bar') == [far: 'bar', foo: 'bar', baz: 'quz']
-  end
-
-  test "values" do
-    assert Keyword.values(sample) == ['bar', 'quz']
-  end
-end
-
-defmodule HashDictTest do
-  use ExUnit.Case
-
-  def sample do
-    HashDict.new(foo: 'bar', baz: 'quz')
-  end
-
-  # Dict module seems more like The Future, as it handles all different Dict implementations
-  test "get" do
-    assert Dict.get(sample, :foo) == 'bar'
-    assert Dict.get(sample, :non_existent) == nil
+  test "Map.get" do
+    assert Map.get(sample, :foo) == 'bar'
+    assert Map.get(sample, :non_existent) == nil
   end
 
   test "[]" do
@@ -48,20 +20,27 @@ defmodule HashDictTest do
     assert sample[:non_existent] == nil
   end
 
-  test "fetch" do
-    {:ok, val} = Dict.fetch(sample, :foo)
+  test "." do
+    assert sample.foo == 'bar'
+    assert_raise KeyError, fn ->
+      sample.non_existent
+    end
+  end
+
+  test "Map.fetch" do
+    {:ok, val} = Map.fetch(sample, :foo)
     assert val == 'bar'
-    :error = Dict.fetch(sample, :non_existent)
+    :error = Map.fetch(sample, :non_existent)
   end
 
-  test "put" do
-    assert Dict.put(sample, :foo, 'bob') == HashDict.new(foo: 'bob', baz: 'quz')
-    assert Dict.put(sample, :far, 'bar') == HashDict.new(foo: 'bar', baz: 'quz', far: 'bar')
+  test "Map.put" do
+    assert Map.put(sample, :foo, 'bob') == %{foo: 'bob', baz: 'quz'}
+    assert Map.put(sample, :far, 'bar') == %{foo: 'bar', baz: 'quz', far: 'bar'}
   end
 
-  test "values" do
-    # HashDict does not preserve order of keys, thus we Enum.sort
-    assert Enum.sort(Dict.values(sample)) == ['bar', 'quz']
+  test "Map.values" do
+    # Map does not preserve order of keys, thus we Enum.sort
+    assert Enum.sort(Map.values(sample)) == ['bar', 'quz']
   end
 end
 
@@ -69,17 +48,7 @@ end
 defmodule SpeedTest do
   use ExUnit.Case
 
-  # ListDict is slow! (866650 microsecs)
-  test "ListDict speed" do
-    {microsec, _} = :timer.tc fn ->
-      Enum.reduce 1..10_000, ListDict.new, fn (i, d) ->
-        Dict.put d, i, 'foo'
-      end
-    end
-    IO.puts "ListDict took #{microsec} microsecs"
-  end
-
-  # HashDict is faster (11085 microsecs)
+  # HashDict is fast (9038 microsecs)
   test "HashDict speed" do
     {microsec, _} = :timer.tc fn ->
       Enum.reduce 1..10_000, HashDict.new, fn (i, d) ->
@@ -87,6 +56,16 @@ defmodule SpeedTest do
       end
     end
     IO.puts "HashDict took #{microsec} microsecs"
+  end
+
+  # Map is slower?? (405888 microsecs)
+  test "Map speed" do
+    {microsec, _} = :timer.tc fn ->
+      Enum.reduce 1..10_000, Map.new, fn (i, d) ->
+        Map.put d, i, 'foo'
+      end
+    end
+    IO.puts "Map took #{microsec} microsecs"
   end
 end
 
