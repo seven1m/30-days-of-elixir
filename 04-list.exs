@@ -10,7 +10,7 @@ defmodule ListTest do
   end
 
   test "sigil" do
-    assert sample == %w(Tim Jen Mac Kai)
+    assert sample == ~w(Tim Jen Mac Kai)
   end
 
   test "head" do
@@ -20,7 +20,7 @@ defmodule ListTest do
 
   test "tail" do
     [_ | tail] = sample
-    assert tail == %w(Jen Mac Kai)
+    assert tail == ~w(Jen Mac Kai)
   end
 
   # warning, has to traverse the entire list!
@@ -29,7 +29,7 @@ defmodule ListTest do
   end
 
   test "delete item" do
-    assert List.delete(sample, "Mac") == %w(Tim Jen Kai)
+    assert List.delete(sample, "Mac") == ~w(Tim Jen Kai)
     # only deletes the first occurrence
     assert List.delete([1, 2, 2, 3], 2) == [1, 2, 3]
   end
