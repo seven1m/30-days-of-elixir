@@ -40,9 +40,8 @@ defmodule SudokuSolver do
   """
   def units do
     ul = unit_list
-    HashDict.new(
-      lc s inlist squares, do: {s, (lc u inlist ul, s in u, do: u)}
-    )
+    list = lc s inlist squares, do: {s, (lc u inlist ul, s in u, do: u)}
+    Enum.into(list, HashDict.new)
   end
 
   @doc """
@@ -56,13 +55,12 @@ defmodule SudokuSolver do
   def peers do
     squares = cross(@rows, @cols)
     u = units
-    HashDict.new(
-      lc s inlist squares do
-        all = u |> Dict.get(s) |> concat |> HashSet.new
-        me = [s] |> HashSet.new
-        {s, HashSet.difference(all, me)}
-      end
-    )
+    list = lc s inlist squares do
+      all = u |> Dict.get(s) |> concat |> Enum.into(HashSet.new)
+      me = [s] |> Enum.into(HashSet.new)
+      {s, HashSet.difference(all, me)}
+    end
+    Enum.into(list, HashDict.new)
   end
 
   @doc """
@@ -71,7 +69,7 @@ defmodule SudokuSolver do
   """
   def parse_grid(grid, board) do
     # To start, every square can be any digit; then assign values from the grid.
-    values = HashDict.new(lc s inlist board.squares, do: {s, @cols})
+    values = Enum.into((lc s inlist board.squares, do: {s, @cols}), HashDict.new)
     do_parse_grid(values, Dict.to_list(grid_values(grid)), board)
   end
 
@@ -91,7 +89,7 @@ defmodule SudokuSolver do
   def grid_values(grid) do
     chars = lc c inlist grid, c in @cols or c in '0.', do: c
     unless count(chars) == 81, do: raise('error')
-    HashDict.new(zip(squares, chars))
+    Enum.into(zip(squares, chars), HashDict.new)
   end
 
   @doc """
@@ -118,7 +116,7 @@ defmodule SudokuSolver do
   # (2) If a unit u is reduced to only one place for a value d, then put it there.
   defp eliminate_vals_from_square(values, square, vals_to_remove, board) do
     vals = Dict.get(values, square)
-    if Set.intersection(HashSet.new(vals), HashSet.new(vals_to_remove)) |> any? do
+    if Set.intersection(Enum.into(vals, HashSet.new), Enum.into(vals_to_remove, HashSet.new)) |> any? do
       vals = reduce vals_to_remove, vals, fn val, vals -> List.delete(vals, val) end
       if length(vals) == 0 do
         # contradiction, removed last value
