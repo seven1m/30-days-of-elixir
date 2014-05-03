@@ -1,6 +1,6 @@
 # 30 Days of Elixir
 
-A walk through the [Elixir](http://elixir-lang.org/) language, one made-up exercise per day for 30 days.
+A walk through the [Elixir](http://elixir-lang.org/) language, one exercise per day for 30 days.
 
 **Update:** updated to work with Elixir 0.13.x as of May 2014.
 
