@@ -7,7 +7,7 @@ defmodule Deck do
     Returns a list of tuples, in sorted order.
   """
   def new do
-    lc suit inlist %w(Hearts Clubs Diamonds Spades),
+    lc suit inlist ~w(Hearts Clubs Diamonds Spades),
        face inlist [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"],
        do: {suit, face}
   end
@@ -17,7 +17,7 @@ defmodule Deck do
 
     If no deck is given, then create a new one and shuffle that.
   """
-  def shuffle(deck // new) do
+  def shuffle(deck \\ new) do
     Enum.shuffle(deck)
   end
 
