@@ -6,6 +6,8 @@
 # (Still no regex match, but I realized I didn't care
 # as much about that as I thought :-)
 
+require Record
+
 defmodule Frank do
   @moduledoc """
     Frank is a micro web library that provides a DSL for defining routes.
@@ -69,19 +71,19 @@ defmodule Frank do
       end
     end
 
-    def redirect(path, code // 302) do
+    def redirect(path, code \\ 302) do
       body = ['redirecting you to <a href="', path, '">', path, '</a>']
       response code, body, [location: path]
     end
 
     def sanitize(content) do
-      content = Regex.replace(%r/&/, content, "\\&amp;")
-      content = Regex.replace(%r/</, content, "\\&lt;")
-      content = Regex.replace(%r/>/, content, "\\&gt;")
+      content = Regex.replace(~r/&/, content, "\\&amp;")
+      content = Regex.replace(~r/</, content, "\\&lt;")
+      content = Regex.replace(~r/>/, content, "\\&gt;")
       content
     end
 
-    def response(code, body, headers // []) do
+    def response(code, body, headers \\ []) do
       if is_binary(body) do
         body = bitstring_to_list(body)
       end
