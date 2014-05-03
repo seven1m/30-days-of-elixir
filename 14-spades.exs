@@ -4,7 +4,7 @@
 #
 # 1. In one terminal, start iex as the dealer:
 #
-#   iex --sname dealer 14-spades.exs
+#   iex --name dealer@localhost 14-spades.exs
 #   iex> Player.start_game
 #
 # 2. In three more terminals, start iex as players:
@@ -29,12 +29,12 @@ defmodule Dealer do
   A separate process that brokers messages and determines winners.
   """
 
-  @card_vals HashDict.new([
+  @card_vals Enum.into([
     {"J", 11},
     {"Q", 12},
     {"K", 13},
     {"A", 14}
-  ])
+  ], HashDict.new)
 
   def start_game do
     :global.register_name(:dealer, self)
@@ -48,7 +48,7 @@ defmodule Dealer do
     wait_for_plays(players)
   end
 
-  defp wait_for_players(players // []) do
+  defp wait_for_players(players \\ []) do
     receive do
       {:join, pid} ->
         IO.puts "#{inspect pid} joined"
@@ -64,7 +64,7 @@ defmodule Dealer do
 
   defp shuffle do
     :random.seed(:erlang.now)
-    deck = lc suit inlist %w(Hearts Diamonds Clubs Spades),
+    deck = lc suit inlist ~w(Hearts Diamonds Clubs Spades),
               face inlist [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"],
               do: {suit, face}
     Enum.shuffle(deck)
@@ -80,7 +80,7 @@ defmodule Dealer do
     Enum.each players, fn p -> send(p, :start) end
   end
 
-  defp wait_for_plays(players, cards_played // [], tricks_played // 0) when tricks_played < 13 do
+  defp wait_for_plays(players, cards_played \\ [], tricks_played \\ 0) when tricks_played < 13 do
     if length(cards_played) == 0, do: IO.puts "#{tricks_played} tricks played"
     receive do
       action = {:play, card, player} ->
@@ -162,7 +162,7 @@ defmodule Player do
     wait_to_start(dealer)
   end
 
-  defp wait_to_start(dealer, hand // []) do
+  defp wait_to_start(dealer, hand \\ []) do
     receive do
       {:deal, card} ->
         hand = [card | hand]
