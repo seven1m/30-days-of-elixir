@@ -3,7 +3,7 @@
 # To run:
 #
 # $ erlc support/sha1.erl && mv sha1.beam support/
-# $ elixir 22-digest.exs
+# $ elixir 23-digest.exs
 #
 # Observations:
 #
