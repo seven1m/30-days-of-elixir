@@ -98,7 +98,7 @@ defmodule Vector do
   end
   defp do_reduce(_, _, _, _, acc, _), do: acc
 
-  defp key(index, depth, indeces // []) when depth > 0 do
+  defp key(index, depth, indeces \\ []) when depth > 0 do
     level = (depth - 1) * @bits
     indeces = indeces ++ [(index >>> level) &&& @mask]
     key(index, depth - 1, indeces)

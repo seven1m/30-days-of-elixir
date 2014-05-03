@@ -110,7 +110,7 @@ defmodule Vector do
     end
   end
 
-  def find(v = vec(size: size), value, index // 0) do
+  def find(v = vec(size: size), value, index \\ 0) do
     cond do
       index >= size          -> nil
       get(v, index) == value -> index
@@ -118,7 +118,7 @@ defmodule Vector do
     end
   end
 
-  def from_list([val | rest], v, index // 0) do
+  def from_list([val | rest], v, index \\ 0) do
     v = put(v, index, val)
     from_list(rest, v, index+1)
   end
