@@ -2,6 +2,8 @@
 
 A walk through the [Elixir](http://elixir-lang.org/) language, one made-up exercise per day for 30 days.
 
+**Update:** updated to work with Elixir 0.13.x as of May 2014.
+
 ### You have to start somewhere.
 
 **01-hello-world.exs** - We start at the very beginning: our first message to the world!
