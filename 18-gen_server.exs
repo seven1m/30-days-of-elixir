@@ -10,7 +10,7 @@ defmodule PrimeFactors do
   @doc """
   Given a number, return a list of prime factors.
   """
-  def prime_factors(number, div // 2, factors // []) do
+  def prime_factors(number, div \\ 2, factors \\ []) do
     cond do
       prime?(number) ->
         [number | factors]
