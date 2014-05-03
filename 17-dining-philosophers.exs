@@ -53,7 +53,7 @@ defmodule Table do
     receive do: (_ -> :ok)
   end
 
-  def manage_resources(forks, waiting // []) do
+  def manage_resources(forks, waiting \\ []) do
     # distribute forks to waiting philosophers
     if length(waiting) > 0 do
       names = lc {_, phil} inlist waiting, do: phil.name
