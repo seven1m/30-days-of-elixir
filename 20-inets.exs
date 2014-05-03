@@ -1,5 +1,7 @@
 # just playing with inets - nothing special
 
+require Record
+
 defmodule WebServer do
   def run do
     :inets.start()
