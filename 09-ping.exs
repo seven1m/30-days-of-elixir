@@ -1,3 +1,7 @@
+# NOTE: I just recently tried running this on my Mac OS machine.
+# Unfortunately, there seems to be a problem spawning 254 `ping` commands. I'm not sure what to do.
+# If you want to see this script run on Mac, change line 54 to 1..100 so you can see something happen. :-/
+
 defmodule Ping do
   @moduledoc """
   Ping a class-C subnet to find hosts that respond.
@@ -17,8 +21,16 @@ defmodule Ping do
   Ping a single IP address and return true if there is a response."
   """
   def ping(ip) do
-    result = :os.cmd('ping -c 1 -w 5 -s 1 #{ip}')
-    not Regex.match?(%r/100(\.0)?% packet loss/, result)
+    result = System.cmd(ping_cmd(ip))
+    not Regex.match?(~r/100(\.0)?% packet loss/, result)
+  end
+
+  def ping_cmd(ip) do
+    "ping -c 1 #{if darwin?, do: '-W', else: '-w'} 5 -s 1 #{ip}"
+  end
+
+  def darwin? do
+    System.cmd("uname") |> String.strip == "Darwin"
   end
 end
 
@@ -38,7 +50,7 @@ defmodule Subnet do
   Given a class-C subnet string like '192.168.1.x', return list of all 254 IPs therein.
   """
   def ips(subnet) do
-    subnet = Regex.run(%r/^\d+\.\d+\.\d+\./, subnet) |> Enum.at(0)
+    subnet = Regex.run(~r/^\d+\.\d+\.\d+\./, subnet) |> Enum.at(0)
     Enum.to_list(1..254) |> Enum.map fn i -> "#{subnet}#{i}" end
   end
 
