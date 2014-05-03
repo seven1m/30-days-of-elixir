@@ -38,10 +38,10 @@ defmodule WebServer do
     end
   end
 
-  def handle_request(sock, request // '') do
+  def handle_request(sock, request \\ '') do
     case :gen_tcp.recv(sock, 0) do
       {:ok, b} ->
-        if Regex.match?(%r/\r\n\r\n/, b) do
+        if Regex.match?(~r/\r\n\r\n/, b) do
           list_to_bitstring([request, b])
         else
           handle_request(sock, [request, b])
@@ -52,7 +52,7 @@ defmodule WebServer do
   end
 
   def extract_user_agent(request) do
-    case Regex.run(%r/User-Agent: (.*)\r\n/, request) do
+    case Regex.run(~r/User-Agent: (.*)\r\n/, request) do
       nil -> nil
       [_, ua] -> ua
     end
