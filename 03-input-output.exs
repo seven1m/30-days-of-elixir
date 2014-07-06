@@ -1,5 +1,5 @@
-# http://elixir-lang.org/docs/stable/IO.html
-# http://elixir-lang.org/docs/stable/File.html
+# http://elixir-lang.org/docs/stable/elixir/IO.html
+# http://elixir-lang.org/docs/stable/elixir/File.html
 
 defmodule CowInterrogator do
 

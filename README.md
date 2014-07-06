@@ -14,7 +14,7 @@ A walk through the [Elixir](http://elixir-lang.org/) language, one exercise per 
 
 **04-list.exs** - What's a functional language without a List? Here we learn some simple list manipulation, and for awhile we can pretend lists are like our familiar Ruby arrays. :-)
 
-**05-dict.exs** - Dict and Keyword structures are a bit of a departure from the Hash in Ruby world. Sure, it's an associative array, but wrapping our minds around Keyword vs HashDict vs ListDict can be confusing. Luckily, it seems we can simplify by defaulting to [HashDict.new](http://elixir-lang.org/docs/stable/HashDict.html#new/0) and using the [Dict methods](http://elixir-lang.org/docs/stable/Dict.html) for manipulation.
+**05-dict.exs** - Dict and Keyword structures are a bit of a departure from the Hash in Ruby world. Sure, it's an associative array, but wrapping our minds around Keyword vs HashDict vs ListDict can be confusing. Luckily, it seems we can simplify by defaulting to [HashDict.new](http://elixir-lang.org/docs/stable/elixir/HashDict.html#new/0) and using the [Dict methods](http://elixir-lang.org/docs/stable/elixir/Dict.html) for manipulation.
 
 **06-record.exs** - Where are our beloved objects? In functional programming, data is just data, and Elixir gives you the Record structure to organize it a bit. Records are a little like Struct from other imperative languages, except of course they are immutable!
 
@@ -68,7 +68,7 @@ A walk through the [Elixir](http://elixir-lang.org/) language, one exercise per 
 
 **24-stream.exs** - Let's build a better Fibonacci method using lazy streams. You can tell our understanding of the language has improved, as the amount of code to implement this is 1/10th of the size of our first foray into Fibonacci!
 
-**25-set.exs** - We'll learn about the built-in [HashSet](http://elixir-lang.org/docs/stable/HashSet.html) library, just for fun.
+**25-set.exs** - We'll learn about the built-in [HashSet](http://elixir-lang.org/docs/stable/elixir/HashSet.html) library, just for fun.
 
 ### The Rat Pack didn't have Macros.
 

@@ -1,5 +1,5 @@
-# http://elixir-lang.org/docs/stable/Dict.html
-# http://elixir-lang.org/docs/stable/Map.html
+# http://elixir-lang.org/docs/stable/elixir/Dict.html
+# http://elixir-lang.org/docs/stable/elixir/Map.html
 
 ExUnit.start
 
