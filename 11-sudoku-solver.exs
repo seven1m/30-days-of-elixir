@@ -114,7 +114,7 @@ defmodule SudokuSolver do
   """
   def combinations([list | rest]) do
     crest = combinations(rest)
-    lc p inlist permutations(list), r inlist crest do
+    for p <- permutations(list), r <- crest do
       flat_map p, fn i -> [i | r] end
     end
   end
@@ -131,7 +131,7 @@ defmodule SudokuSolver do
   # http://whileonefork.blogspot.com/2010/11/erlang-so-awesome-it-makes-my-brain.html
   def permutations([]), do: [[]]
   def permutations(list) do
-    lc h inlist list, t inlist permutations(list -- [h]), do: [h | t]
+    for h <- list, t <- permutations(list -- [h]), do: [h | t]
   end
 end
 
@@ -159,5 +159,3 @@ defmodule SudokuSolverTest do
   end
 
 end
-
-

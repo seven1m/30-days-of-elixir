@@ -64,7 +64,7 @@ defmodule ListTest do
   end
 
   test "list comprehension" do
-    some = lc n inlist sample, String.first(n) < "M", do: n <> " Morgan"
+    some = for n <- sample, String.first(n) < "M", do: n <> " Morgan"
     assert some == ["Jen Morgan", "Kai Morgan"]
   end
 
