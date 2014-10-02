@@ -56,7 +56,7 @@ defmodule Table do
   def manage_resources(forks, waiting \\ []) do
     # distribute forks to waiting philosophers
     if length(waiting) > 0 do
-      names = lc {_, phil} inlist waiting, do: phil.name
+      names = for {_, phil} <- waiting, do: phil.name
       IO.puts "#{length waiting} philosopher#{if length(waiting) == 1, do: '', else: 's'} waiting: #{Enum.join names, ", "}"
       if length(forks) >= 2 do
         [{pid, _} | waiting] = waiting

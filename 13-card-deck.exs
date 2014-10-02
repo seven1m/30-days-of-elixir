@@ -7,8 +7,8 @@ defmodule Deck do
     Returns a list of tuples, in sorted order.
   """
   def new do
-    lc suit inlist ~w(Hearts Clubs Diamonds Spades),
-       face inlist [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"],
+    for suit <- ~w(Hearts Clubs Diamonds Spades),
+       face <- [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"],
        do: {suit, face}
   end
 
@@ -64,4 +64,3 @@ defmodule DeckTest do
     assert Enum.at(players, 3) == {"kai", [{"Hearts", 5}, {"Hearts", 9}, {"Hearts", "K"}, {"Clubs",    4}, {"Clubs", 8}, {"Clubs", "Q"}, {"Diamonds", 3}, {"Diamonds", 7}, {"Diamonds", "J"}, {"Spades",     2}, {"Spades", 6}, {"Spades", 10}, {"Spades", "A"}]}
   end
 end
-
