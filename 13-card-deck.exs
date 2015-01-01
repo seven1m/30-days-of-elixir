@@ -39,7 +39,6 @@ ExUnit.start
 
 defmodule DeckTest do
   use ExUnit.Case
-  doctest Deck
 
   test "new" do
     deck = Deck.new

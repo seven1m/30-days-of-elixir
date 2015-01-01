@@ -64,8 +64,8 @@ defmodule Dealer do
 
   defp shuffle do
     :random.seed(:erlang.now)
-    deck = lc suit inlist ~w(Hearts Diamonds Clubs Spades),
-              face inlist [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"],
+    deck = for suit <- ~w(Hearts Diamonds Clubs Spades),
+              face <- [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"],
               do: {suit, face}
     Enum.shuffle(deck)
   end
@@ -80,7 +80,11 @@ defmodule Dealer do
     Enum.each players, fn p -> send(p, :start) end
   end
 
-  defp wait_for_plays(players, cards_played \\ [], tricks_played \\ 0) when tricks_played < 13 do
+  defp wait_for_plays(players) do
+    wait_for_plays(players, [], 0)
+  end
+
+  defp wait_for_plays(players, cards_played, tricks_played) when tricks_played < 13 do
     if length(cards_played) == 0, do: IO.puts "#{tricks_played} tricks played"
     receive do
       action = {:play, card, player} ->
@@ -214,7 +218,7 @@ defmodule Player do
     try do
       number = IO.gets("Enter a card number to play: ")
         |> String.strip
-        |> binary_to_integer
+        |> String.to_integer
       card = Enum.at(hand, number-1)
       unless card, do: raise ArgumentError
       card
@@ -269,7 +273,7 @@ if List.first(System.argv) == "--test" do
     end
 
     test "setup" do
-      dealer = Process.spawn_monitor Player, :start_game, []
+      dealer = spawn_monitor Player, :start_game, []
       :timer.sleep(100) # TODO why is this necessary?
       two    = spawn Player, :join, []
       three  = spawn Player, :join, []
