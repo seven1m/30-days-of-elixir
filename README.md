@@ -2,7 +2,7 @@
 
 A walk through the [Elixir](http://elixir-lang.org/) language, one exercise per day for 30 days.
 
-**Update:** updated to work with Elixir 0.13.x as of May 2014.
+**Update:** updated to work with Elixir 1.0.2 as of Jan 2015. Special thanks to [parroty](https://github.com/parroty) for help in updating for 1.0 compatibility.
 
 ### You have to start somewhere.
 
