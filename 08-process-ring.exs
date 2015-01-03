@@ -34,9 +34,9 @@ end
 defmodule Spawner do
   def start do
     limit = 5
-    {foo, _foo_monitor} = Process.spawn_monitor(Pinger, :ping, ["ping", limit])
-    {bar, _bar_monitor} = Process.spawn_monitor(Pinger, :ping, ["pong", limit])
-    {baz, _baz_monitor} = Process.spawn_monitor(Pinger, :ping, ["pung", limit])
+    {foo, _foo_monitor} = spawn_monitor(Pinger, :ping, ["ping", limit])
+    {bar, _bar_monitor} = spawn_monitor(Pinger, :ping, ["pong", limit])
+    {baz, _baz_monitor} = spawn_monitor(Pinger, :ping, ["pung", limit])
     send foo, {[bar, baz, foo], "start", 0}
     wait [foo, bar, baz]
   end

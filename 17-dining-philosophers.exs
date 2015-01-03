@@ -23,7 +23,7 @@ defmodule Table do
 
   h2. Sample Run
 
-    $ elixir 16-dining-philosophers.exs
+    $ elixir 17-dining-philosophers.exs
 
     1 philosopher waiting: Aristotle
     1 philosopher waiting: Kant
@@ -37,18 +37,20 @@ defmodule Table do
     ...
   """
 
-  defrecord Philosopher, name: nil, ate: 0, thunk: 0
+  defmodule Philosopher do
+    defstruct name: nil, ate: 0, thunk: 0
+  end
 
   def simulate do
     forks = [:fork1, :fork2, :fork3, :fork4, :fork5]
 
     table = spawn_link(Table, :manage_resources, [forks])
 
-    spawn(Dine, :dine, [Philosopher[name: "Aristotle"], table])
-    spawn(Dine, :dine, [Philosopher[name: "Kant"     ], table])
-    spawn(Dine, :dine, [Philosopher[name: "Spinoza"  ], table])
-    spawn(Dine, :dine, [Philosopher[name: "Marx"     ], table])
-    spawn(Dine, :dine, [Philosopher[name: "Russell"  ], table])
+    spawn(Dine, :dine, [%Philosopher{name: "Aristotle"}, table])
+    spawn(Dine, :dine, [%Philosopher{name: "Kant"     }, table])
+    spawn(Dine, :dine, [%Philosopher{name: "Spinoza"  }, table])
+    spawn(Dine, :dine, [%Philosopher{name: "Marx"     }, table])
+    spawn(Dine, :dine, [%Philosopher{name: "Russell"  }, table])
 
     receive do: (_ -> :ok)
   end
@@ -89,7 +91,7 @@ defmodule Dine do
   end
 
   def eat(phil, forks, table) do
-    phil = phil.ate(phil.ate + 1)
+    phil = %{phil | ate: phil.ate + 1}
     IO.puts "#{phil.name} is eating (count: #{phil.ate})"
     :timer.sleep(:random.uniform(1000))
     IO.puts "#{phil.name} is done eating"
@@ -100,7 +102,7 @@ defmodule Dine do
   def think(phil, _) do
     IO.puts "#{phil.name} is thinking (count: #{phil.thunk})"
     :timer.sleep(:random.uniform(1000))
-    phil.thunk(phil.thunk + 1)
+    %{phil | thunk: phil.thunk + 1}
   end
 
 end

@@ -26,13 +26,13 @@ defmodule Tree do
       |> String.split("\n")
       |> Enum.reverse
       |> Enum.map(fn row ->
-        lc num inlist String.split(row, " "), do: binary_to_integer(num)
+        for num <- String.split(row, " "), do: String.to_integer(num)
       end)
       |> Enum.map(fn row -> append_index(row) end)
   end
 
   def reduce_row(row, comparison_row) do
-    lc {{main, index}, {opt1, index1}, {opt2, index2}} inlist pairs(row, comparison_row) do
+    for {{main, index}, {opt1, index1}, {opt2, index2}} <- pairs(row, comparison_row) do
       sum1 = main + opt1
       sum2 = main + opt2
       if sum1 > sum2 do
@@ -44,13 +44,13 @@ defmodule Tree do
   end
 
   def append_index(row) do
-    lc {num, index} inlist Enum.with_index(row) do
+    for {num, index} <- Enum.with_index(row) do
       {num, [index]}
     end
   end
 
   def pairs(row, comparison_row) do
-    lc {num, path = [index | _]} inlist comparison_row do
+    for {num, path = [index | _]} <- comparison_row do
       {{num, path}, Enum.at(row, index), Enum.at(row, index+1)}
     end
   end
@@ -69,7 +69,7 @@ defmodule Tree do
       |> Enum.each(fn {row, row_index} ->
         if rem(row_index, 2) == 0, do: IO.write(" ")
         String.duplicate("  ", div(size - length(row), 2)) |> IO.write
-        (lc {_, [p | _]} inlist row do
+        (for {_, [p | _]} <- row do
           if p == Enum.at(path, row_index) do
             "\e[31mx"
           else

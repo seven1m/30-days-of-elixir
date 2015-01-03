@@ -12,10 +12,12 @@ defmodule SudokuSolver do
   import Enum
 
   # used to cache all squares, units, and peer relationships
-  defrecord Board, squares: nil, units: nil, peers: nil
+  defmodule Board do
+    defstruct squares: nil, units: nil, peers: nil
+  end
 
   def cross(list_a, list_b) do
-    lc a inlist list_a, b inlist list_b, do: [a] ++ [b]
+    for a <- list_a, b <- list_b, do: [a] ++ [b]
   end
 
   @doc "Return all squares"
@@ -25,9 +27,9 @@ defmodule SudokuSolver do
   All squares divided by row, column, and box.
   """
   def unit_list do
-    (lc c inlist @cols, do: cross(@rows, [c])) ++
-    (lc r inlist @rows, do: cross([r], @cols)) ++
-    (lc rs inlist chunk(@rows, 3), cs inlist chunk(@cols, 3), do: cross(rs, cs))
+    (for c <- @cols, do: cross(@rows, [c])) ++
+    (for r <- @rows, do: cross([r], @cols)) ++
+    (for rs <- chunk(@rows, 3), cs <- chunk(@cols, 3), do: cross(rs, cs))
   end
 
   @doc """
@@ -40,7 +42,7 @@ defmodule SudokuSolver do
   """
   def units do
     ul = unit_list
-    list = lc s inlist squares, do: {s, (lc u inlist ul, s in u, do: u)}
+    list = for s <- squares, do: {s, (for u <- ul, s in u, do: u)}
     Enum.into(list, HashDict.new)
   end
 
@@ -55,7 +57,7 @@ defmodule SudokuSolver do
   def peers do
     squares = cross(@rows, @cols)
     u = units
-    list = lc s inlist squares do
+    list = for s <- squares do
       all = u |> Dict.get(s) |> concat |> Enum.into(HashSet.new)
       me = [s] |> Enum.into(HashSet.new)
       {s, HashSet.difference(all, me)}
@@ -69,7 +71,7 @@ defmodule SudokuSolver do
   """
   def parse_grid(grid, board) do
     # To start, every square can be any digit; then assign values from the grid.
-    values = Enum.into((lc s inlist board.squares, do: {s, @cols}), HashDict.new)
+    values = Enum.into((for s <- board.squares, do: {s, @cols}), HashDict.new)
     do_parse_grid(values, Dict.to_list(grid_values(grid)), board)
   end
 
@@ -87,7 +89,7 @@ defmodule SudokuSolver do
   Convert grid into a Dict of {square: char} with '0' or '.' for empties.
   """
   def grid_values(grid) do
-    chars = lc c inlist grid, c in @cols or c in '0.', do: c
+    chars = for c <- grid, c in @cols or c in '0.', do: c
     unless count(chars) == 81, do: raise('error')
     Enum.into(zip(squares, chars), HashDict.new)
   end
@@ -141,7 +143,7 @@ defmodule SudokuSolver do
   defp eliminate_from_units(values, units, vals_to_remove, board) do
     reduce_if_truthy units, values, fn unit, values ->
       reduce_if_truthy vals_to_remove, values, fn val, values ->
-        dplaces = lc s inlist unit, val in Dict.get(values, s), do: s
+        dplaces = for s <- unit, val in Dict.get(values, s), do: s
         case length(dplaces) do
           0 -> false                                      # contradiction: no place for this value
           1 -> assign(values, at(dplaces, 0), val, board) # d can only be in one place in unit; assign it there
@@ -165,7 +167,7 @@ defmodule SudokuSolver do
   Use display/1 to print the grid as a square.
   """
   def solve(grid) do
-    board = Board[squares: squares, units: units, peers: peers]
+    board = %Board{squares: squares, units: units, peers: peers}
     grid
       |> parse_grid(board)
       |> search(board)
