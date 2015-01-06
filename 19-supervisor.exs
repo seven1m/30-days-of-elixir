@@ -1,10 +1,10 @@
-# The goal here is to learn (a tiny bit) about the Supervisor.Behaviour
+# The goal here is to learn (a tiny bit) about the Supervisor
 # We simply fire up the server from exercise 18 and restart it on failure.
 
 Code.load_file("./18-gen_server.exs")
 
 defmodule PrimeFactorsServer.Sup do
-  use Supervisor.Behaviour
+  use Supervisor
 
   def start_link do
     :supervisor.start_link(__MODULE__, [])
@@ -26,7 +26,7 @@ end
 #
 # iex> :gen_server.call(:prime_factors, "a")
 # =ERROR REPORT==== 30-Dec-2013::22:54:42 ===
-# ** Generic server prime_factors terminating 
+# ** Generic server prime_factors terminating
 # ** Last message in was <<"a">>
 # ** When Server state == []
 # ** Reason for termination ==

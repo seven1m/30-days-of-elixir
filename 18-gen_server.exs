@@ -1,4 +1,4 @@
-# I wanted to learn about the GenServer.Behaviour, so:
+# I wanted to learn about the GenServer, so:
 # 1. first wrote a function to return prime factors of a given number
 # 2. then wrapped that in a "server" that handles both sync and async calls
 
@@ -45,7 +45,7 @@ defmodule PrimeFactorsServer do
   Wrap the PrimeFactors.prime_factors functionality in a server.
   """
 
-  use GenServer.Behaviour
+  use GenServer
 
   import PrimeFactors
 
