@@ -32,7 +32,7 @@ defmodule WebServer do
           nil -> "You don't have a user-agent!"
           ua -> "Your User-Agent is: #{ua}"
         end
-        :gen_tcp.send(sock, bitstring_to_list("HTTP/1.1 200 OK\r\n\r\n" <> msg <> "\r\n"))
+        :gen_tcp.send(sock, :erlang.bitstring_to_list("HTTP/1.1 200 OK\r\n\r\n" <> msg <> "\r\n"))
         :gen_tcp.close(sock) # no keep-alive for you!
         accept_connection(lsock)
     end
@@ -42,7 +42,7 @@ defmodule WebServer do
     case :gen_tcp.recv(sock, 0) do
       {:ok, b} ->
         if Regex.match?(~r/\r\n\r\n/, b) do
-          list_to_bitstring([request, b])
+          :erlang.list_to_bitstring([request, b])
         else
           handle_request(sock, [request, b])
         end

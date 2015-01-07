@@ -14,7 +14,7 @@ defmodule Wiki do
     ... then point your browser to http://localhost:3000
   """
 
-  defrecord :mod, Record.extract(:mod, from_lib: "inets/include/httpd.hrl")
+  Record.defrecord :mod, Record.extract(:mod, from_lib: "inets/include/httpd.hrl")
 
   @page_name "([A-Z][a-z0-9]+){2,}"
   @valid_page_name ~r/^([A-Z][a-z0-9]+){2,}$/
@@ -31,18 +31,18 @@ defmodule Wiki do
   end
 
   def unquote(:do)(data) do
-    [_slash | name] = data.request_uri
+    [_slash | name] = mod(data, :request_uri)
 
     cond do
       name == '' ->
         redirect('/HomePage')
-      Regex.match?(@valid_page_name, list_to_bitstring(name)) ->
-        case data.method do
+      Regex.match?(@valid_page_name, :erlang.list_to_bitstring(name)) ->
+        case mod(data, :method) do
           'GET'  -> render_page(name)
           'POST' -> save_page(name, data); redirect(name)
         end
-      Regex.match?(@edit_path, list_to_bitstring(name)) ->
-        name = Regex.replace(~r/\/edit$/, list_to_bitstring(name), "")
+      Regex.match?(@edit_path, :erlang.list_to_bitstring(name)) ->
+        name = Regex.replace(~r/\/edit$/, :erlang.list_to_bitstring(name), "")
         render_page(name, :edit)
       true ->
         response(404, 'bad path')
@@ -57,11 +57,11 @@ defmodule Wiki do
   def render_page(name, action \\ :show) do
     case {action, File.read(page_path(name))} do
       {:edit, {:ok, body}} ->
-        response 200, edit_page_form(name, body) |> bitstring_to_list
+        response 200, edit_page_form(name, body) |> :erlang.bitstring_to_list
       {:show, {:ok, body}} ->
-        response 200, body |> format(name) |> bitstring_to_list
+        response 200, body |> format(name) |> :erlang.bitstring_to_list
       _ ->
-        response 404, edit_page_form(name) |> bitstring_to_list
+        response 404, edit_page_form(name) |> :erlang.bitstring_to_list
     end
   end
 
@@ -86,7 +86,7 @@ defmodule Wiki do
 
   def linkify(content) do
     {:ok, regex} = Regex.compile(@page_name)
-    Regex.replace(regex, content, "<a href='/&'>&</a>")
+    Regex.replace(regex, content, "<a href='/\\0'>\\0</a>")
   end
 
   def layoutify(content, name) do
@@ -102,7 +102,7 @@ defmodule Wiki do
   end
 
   def save_page(name, data) do
-    [{'content', content}] = :httpd.parse_query(data.entity_body)
+    [{'content', content}] = :httpd.parse_query(mod(data, :entity_body))
     File.write!(page_path(name), content)
   end
 
@@ -111,7 +111,7 @@ defmodule Wiki do
   end
 
   def response(code, body, headers \\ []) do
-    headers = [code: code, content_length: integer_to_list(iolist_size(body))] ++ headers
+    headers = [code: code, content_length: Integer.to_char_list(IO.iodata_length(body))] ++ headers
     {:proceed, [response: {:response, headers, body}]}
   end
 end
