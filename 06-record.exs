@@ -1,9 +1,11 @@
 ExUnit.start
 
-defrecord User, email: nil, password: nil
+defmodule User do
+  defstruct email: nil, password: nil
+end
 
 defimpl String.Chars, for: User do
-  def to_string(User[email: email]) do
+  def to_string(%User{email: email}) do
     email
   end
 end
@@ -14,7 +16,8 @@ defmodule RecordTest do
   defmodule ScopeTest do
     use ExUnit.Case
 
-    defrecordp :person, first_name: nil, last_name: nil, age: nil
+    require Record
+    Record.defrecordp :person, first_name: nil, last_name: nil, age: nil
 
     test "defrecordp" do
       p = person(first_name: "Kai", last_name: "Morgan", age: 5) # regular function call
@@ -28,11 +31,11 @@ defmodule RecordTest do
   # end
 
   def sample do
-    User[email: "kai@example.com", password: "trains"] # special [] syntax for record creation
+    %User{email: "kai@example.com", password: "trains"} # special % syntax for struct creation
   end
 
-  test "defrecord" do
-    assert sample == {User, "kai@example.com", "trains"}
+  test "defstruct" do
+    assert sample == %{__struct__: User, email: "kai@example.com", password: "trains"}
   end
 
   test "property" do
@@ -41,8 +44,8 @@ defmodule RecordTest do
 
   test "update" do
     u = sample
-    u2 = u.update(email: "tim@example.com")
-    assert u2 == {User, "tim@example.com", "trains"}
+    u2 = %User{u | email: "tim@example.com"}
+    assert u2 == %User{email: "tim@example.com", password: "trains"}
   end
 
   test "protocol" do
