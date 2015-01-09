@@ -25,9 +25,15 @@ defmodule Frank do
         end
 
         Frank.sing(MyApp)
-  """
 
-  defrecord :mod, Record.extract(:mod, from_lib: "inets/include/httpd.hrl")
+    To run:
+
+    $ iex 28-frank-3.exs
+
+    ... then point your browser to http://localhost:3000
+    """
+
+  Record.defrecord :mod, Record.extract(:mod, from_lib: "inets/include/httpd.hrl")
 
   @doc """
     Start the web server given the app module.
@@ -59,11 +65,11 @@ defmodule Frank do
 
     defp build_pattern(path) do
       path = String.lstrip(path, ?/)
-      lc part inlist String.split(path, "/") do
+      for part <- String.split(path, "/") do
         cond do
           String.starts_with?(part, ":") ->
             # expands (when unquoted) to a variable name
-            {binary_to_atom(String.lstrip(part, ?:)), [], nil}
+            {String.to_atom(String.lstrip(part, ?:)), [], nil}
           true ->
             # literal string match
             part
@@ -85,9 +91,9 @@ defmodule Frank do
 
     def response(code, body, headers \\ []) do
       if is_binary(body) do
-        body = bitstring_to_list(body)
+        body = :erlang.bitstring_to_list(body)
       end
-      headers = [code: code, content_length: integer_to_list(iolist_size(body))] ++ headers
+      headers = [code: code, content_length: Integer.to_char_list(IO.iodata_length(body))] ++ headers
       {:proceed, [response: {:response, headers, body}]}
     end
   end
@@ -97,8 +103,8 @@ defmodule Frank do
       import Frank.Path
 
       def unquote(:do)(data) do
-        [_ | path] = data.request_uri
-        path = list_to_bitstring(path)
+        [_ | path] = Frank.mod(data, :request_uri)
+        path = :erlang.list_to_bitstring(path)
         parts = String.split(path, "/")
         handle(parts, data)
       end

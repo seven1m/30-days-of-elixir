@@ -18,7 +18,8 @@ defmodule Vector do
 
   @template :erlang.make_tuple(10, nil)
 
-  defrecordp :vec, Vector, size: 0, children: {nil, @template}
+  require Record
+  Record.defrecordp :vec, Vector, size: 0, children: {nil, @template}
 
   @doc """
   Builds a new empty vector.
@@ -118,7 +119,8 @@ defmodule Vector do
     end
   end
 
-  def from_list([val | rest], v, index \\ 0) do
+  def from_list(list, v), do: from_list(list, v, 0)
+  def from_list([val | rest], v, index) do
     v = put(v, index, val)
     from_list(rest, v, index+1)
   end
@@ -155,7 +157,7 @@ defmodule Vector do
   # traverse down the tree to store the value
   defp do_put({val, children}, [pos | hash_rest], value) do
     tree = do_put(elem(children, pos), hash_rest, value)
-    {val, set_elem(children, pos, tree)}
+    {val, put_elem(children, pos, tree)}
   end
 
   # generate a hash of the index,
@@ -163,8 +165,8 @@ defmodule Vector do
   defp hash(index) do
     chars = index
       |> :erlang.phash2
-      |> integer_to_list
-    lc c inlist chars, do: list_to_integer([c])
+      |> Integer.to_char_list
+    for c <- chars, do: List.to_integer([c])
   end
 end
 
@@ -187,8 +189,6 @@ ExUnit.start
 
 defmodule VectorTest do
   use ExUnit.Case
-
-  doctest Vector
 
   test "stores a value at an index in a tree structure" do
     v = Vector.new
@@ -246,7 +246,7 @@ defmodule VectorTest do
 
   test "count" do
     v = Vector.new([1,2,3])
-    assert size(v) == 3
+    assert tuple_size(v) == 3
   end
 
   test "reduce" do

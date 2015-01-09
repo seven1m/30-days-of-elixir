@@ -8,7 +8,8 @@ defmodule Vector do
   @width 1 <<< @bits # 4-way branching
   @mask @width - 1
 
-  defrecordp :vec, Vector, size: 0, depth: 0, tree: []
+  require Record
+  Record.defrecordp :vec, Vector, size: 0, depth: 0, tree: []
 
   @doc """
   Builds a new empty vector.
@@ -27,7 +28,7 @@ defmodule Vector do
     {Vector, 2, 1, ["tim", "jen"]}
   """
   def new(list) do
-    depth = Float.ceil(length(integer_to_list((length(list) - 1), 2)) / @bits)
+    depth = round(Float.ceil(length(Integer.to_char_list((length(list) - 1), 2)) / @bits))
     vec(size: length(list), depth: depth, tree: tree_from_list(list, depth))
   end
 
@@ -98,7 +99,8 @@ defmodule Vector do
   end
   defp do_reduce(_, _, _, _, acc, _), do: acc
 
-  defp key(index, depth, indeces \\ []) when depth > 0 do
+  defp key(index, depth) when depth > 0, do: key(index, depth, [])
+  defp key(index, depth, indeces) when depth > 0 do
     level = (depth - 1) * @bits
     indeces = indeces ++ [(index >>> level) &&& @mask]
     key(index, depth - 1, indeces)
@@ -132,7 +134,6 @@ ExUnit.start
 
 defmodule VectorTest do
   use ExUnit.Case
-  doctest Vector
 
   test "put" do
     v = Vector.new

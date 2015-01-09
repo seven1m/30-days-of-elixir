@@ -23,9 +23,15 @@ defmodule Frank do
         end
 
         Frank.sing(MyApp)
+
+    To run:
+
+    $ iex 27-frank-2.exs
+
+    ... then point your browser to http://localhost:3000
   """
 
-  defrecord :mod, Record.extract(:mod, from_lib: "inets/include/httpd.hrl")
+  Record.defrecord :mod, Record.extract(:mod, from_lib: "inets/include/httpd.hrl")
 
   @doc """
     Start the web server given the app module.
@@ -70,9 +76,9 @@ defmodule Frank do
 
     def response(code, body, headers \\ []) do
       if is_binary(body) do
-        body = bitstring_to_list(body)
+        body = :erlang.bitstring_to_list(body)
       end
-      headers = [code: code, content_length: integer_to_list(iolist_size(body))] ++ headers
+      headers = [code: code, content_length: Integer.to_char_list(IO.iodata_length(body))] ++ headers
       {:proceed, [response: {:response, headers, body}]}
     end
   end
@@ -82,9 +88,9 @@ defmodule Frank do
       import Frank.Path
 
       def unquote(:do)(data) do
-        name = data.request_uri
+        name = Frank.mod(data, :request_uri)
         IO.puts "calling #{name}"
-        handle(list_to_bitstring(name), data)
+        handle(:erlang.list_to_bitstring(name), data)
       end
 
       @before_compile Path
