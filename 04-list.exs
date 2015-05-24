@@ -1,4 +1,4 @@
-# http://elixir-lang.org/getting_started/2.html
+# http://elixir-lang.org/getting-started/basic-types.html
 
 ExUnit.start
 

@@ -1,8 +1,9 @@
 # The goal here was to learn about Elixir's (Erlang's) lightweight processes.
 # The following module gets spawned a few times connected in a ring where messages are sent around in order.
 
-# http://elixir-lang.org/getting_started/2.html
-# http://elixir-lang.org/docs/master/Process.html
+# http://elixir-lang.org/getting-started/basic-types.html
+# http://elixir-lang.org/docs/stable/elixir/Process.html
+# http://elixir-lang.org/getting-started/processes.html
 # http://benjamintanweihao.github.io/blog/2013/06/25/elixir-for-the-lazy-impatient-and-busy-part-2-processes-101/
 # http://benjamintanweihao.github.io/blog/2013/07/13/elixir-for-the-lazy-impatient-and-busy-part-4-processes-101/
 

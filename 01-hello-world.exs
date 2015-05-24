@@ -1,3 +1,3 @@
-# http://elixir-lang.org/getting_started/1.html
+# http://elixir-lang.org/getting-started/introduction.html
 
 IO.puts "hello world"
