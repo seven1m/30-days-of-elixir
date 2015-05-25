@@ -6,7 +6,7 @@ ExUnit.start                                # set up the test runner
 defmodule MyTest do
   use ExUnit.Case                           # use requires a module and sets up macros; will explore more later
 
-  def test_assert(_) do                     # method name starting with "test" and accepting one arg
+  test 'simple test' do
     assert 1 + 1 == 2
     #assert 1 + 1 == 3                      # Elixir is smart! No need for assert_equal, assert_gte, etc.
                                             # And we still get great failure messages, yipee!
