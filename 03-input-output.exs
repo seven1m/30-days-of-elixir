@@ -45,13 +45,12 @@ ExUnit.start
 
 defmodule InputOutputTest do
   use ExUnit.Case
-
   import String
 
   test "checks if cow_art returns string from support/cow.txt" do
     # this call checks if cow_art function returns art from txt file
     art = CowInterrogator.cow_art
-    assert strip(art) |> first == "("
+    assert String.strip(art) |> first == "(" # first is implementaed in String module
   end
 end
 
