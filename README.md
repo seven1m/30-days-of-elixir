@@ -10,6 +10,8 @@ A walk through the [Elixir](http://elixir-lang.org/) language, one exercise per 
 
 **02-unit-testing.exs** - We'll need unit testing for the rest of the excercises, so let's do this! The built-in unit testing library ExUnit is capable and easy-to-use.
 
+**03-function-capturing.exs - Quick introduction to function capturing and how to handle different arguments for the same function in module
+
 **03-input-output.exs** - Here we learn that file input and user input are easy. José has even done us a solid and duplicated some familiar Path and File methods from Ruby.
 
 **04-list.exs** - What's a functional language without a List? Here we learn some simple list manipulation, and for awhile we can pretend lists are like our familiar Ruby arrays. :-)
