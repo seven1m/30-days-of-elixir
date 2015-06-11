@@ -49,6 +49,19 @@ defmodule Fib2 do
   end
 end
 
+
+defmodule Fib3 do
+  @moduledoc """
+  Fibomacci based on unfold Stream and Enum.take
+  It is the most compact implementation but it is
+  not the fastest one
+  """
+
+  def fib3(n) do
+   Stream.unfold({0, 1}, fn {a, b} -> {a, {b, a + b}} end) |> Enum.take(n)
+  end
+end
+
 ExUnit.start
 
 defmodule RecursionTest do
@@ -72,10 +85,21 @@ defmodule RecursionTest do
     assert fib2(10) == [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
   end
 
+  import Fib3
+
+  test "fibonacci 3" do
+    assert fib3(0) == []
+    assert fib3(1) == [0]
+    assert fib3(2) == [0, 1]
+    assert fib3(10) == [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+  end
+
   test "benchmark" do
     {microsecs, _} = :timer.tc fn -> fib(1000) end
     IO.puts "fib() took #{microsecs} microsecs"     # 7118 microsecs
     {microsecs, _} = :timer.tc fn -> fib2(1000) end
     IO.puts "fib2() took #{microsecs} microsecs"    # 90 microsecs
+    {microsecs, _} = :timer.tc fn -> fib3(1000) end
+    IO.puts "fib3() took #{microsecs} microsecs"    # 460 microsecs
   end
 end
