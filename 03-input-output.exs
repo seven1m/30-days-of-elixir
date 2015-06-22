@@ -50,7 +50,7 @@ defmodule InputOutputTest do
   test "checks if cow_art returns string from support/cow.txt" do
     # this call checks if cow_art function returns art from txt file
     art = CowInterrogator.cow_art
-    assert String.strip(art) |> first == "(" # first is implementaed in String module
+    assert String.strip(art) |> first == "(" # first is implemented in String module
   end
 end
 
