@@ -1,6 +1,13 @@
 # NOTE: I just recently tried running this on my Mac OS machine.
-# Unfortunately, there seems to be a problem spawning 254 `ping` commands. I'm not sure what to do.
-# If you want to see this script run on Mac, change line 54 to 1..100 so you can see something happen. :-/
+#
+# If you get errors running 254 ping commands it's probably due to the number
+# of open files.  You can "fix" this by running this command in the terminal
+# session bofore running this program:
+#
+#   ulimit -n 1024
+#
+# If the limit is 256 (the default) then we can run 120 or so before we run out
+# of file descriptors.
 
 defmodule Ping do
   @moduledoc """
