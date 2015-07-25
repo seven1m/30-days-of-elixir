@@ -51,7 +51,9 @@ defmodule Subnet do
   def ping(subnet) do
     all = ips(subnet)
     Enum.each all, fn ip ->
-      spawn(Ping, :ping_async, [ip, self])
+      # Task.start gives better logging than spawn when things go awry.
+      # http://elixir-lang.org/getting-started/processes.html#tasks
+      Task.start(Ping, :ping_async, [ip, self])
     end
     wait HashDict.new, Enum.count(all)
   end
