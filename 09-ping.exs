@@ -18,19 +18,33 @@ defmodule Ping do
   """
 
   @doc """
-  Ping an IP asynchronously and send the {ip, exists} tuple to the parent
+  Ping an IP asynchronously and send a tuple back to the parent saying what
+  has happened:
+
+  `{:ok, ip, pingable?}` where `pingable?` tells us if `ip` is pingable.
+
+  `{:error, ip, error}` when some error caused us to not be able to run the
+  ping command.
+
   """
   def ping_async(ip, parent) do
-    send parent, {ip, ping(ip)}
+    send parent, run_ping(ip)
   end
 
   @doc """
-  Ping a single IP address and return true if there is a response."
+  Ping a single IP address returning a tuple which `ping_async` can return.
   """
-  def ping(ip) do
-    # return code should be handled somehow with pattern matching
-    {cmd_output, _} = System.cmd("ping", ping_args(ip))
-    not Regex.match?(~r/100(\.0)?% packet loss/, cmd_output)
+  def run_ping(ip) do
+    # This is a Ruby-ish way of dealing with failure...
+    # TODO: Discover the "Elixir way"
+    try do
+      # return code should be handled somehow with pattern matching
+      {cmd_output, _} = System.cmd("ping", ping_args(ip))
+      alive? = not Regex.match?(~r/100(\.0)?% packet loss/, cmd_output)
+      {:ok, ip, alive?}
+    rescue
+      e -> {:error, ip, e}
+    end
   end
 
   def ping_args(ip) do
@@ -69,10 +83,12 @@ defmodule Subnet do
   defp wait(dict, 0), do: dict
   defp wait(dict, remaining) do
     receive do
-      {ip, exists} ->
-        dict = Dict.put(dict, ip, exists)
-        wait dict, remaining-1
+      {:ok, ip, pingable?} ->
+        dict = Dict.put(dict, ip, pingable?)
+      {:error, ip, error} ->
+        IO.puts "#{inspect error} for #{ip}"
     end
+    wait dict, remaining - 1
   end
 end
 
