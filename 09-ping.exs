@@ -1,6 +1,13 @@
 # NOTE: I just recently tried running this on my Mac OS machine.
-# Unfortunately, there seems to be a problem spawning 254 `ping` commands. I'm not sure what to do.
-# If you want to see this script run on Mac, change line 54 to 1..100 so you can see something happen. :-/
+#
+# If you get errors running 254 ping commands it's probably due to the number
+# of open files.  You can "fix" this by running this command in the terminal
+# session bofore running this program:
+#
+#   ulimit -n 1024
+#
+# If the limit is 256 (the default) then we can run 120 or so before we run out
+# of file descriptors.
 
 defmodule Ping do
   @moduledoc """
@@ -11,19 +18,33 @@ defmodule Ping do
   """
 
   @doc """
-  Ping an IP asynchronously and send the {ip, exists} tuple to the parent
+  Ping an IP asynchronously and send a tuple back to the parent saying what
+  has happened:
+
+  `{:ok, ip, pingable?}` where `pingable?` tells us if `ip` is pingable.
+
+  `{:error, ip, error}` when some error caused us to not be able to run the
+  ping command.
+
   """
   def ping_async(ip, parent) do
-    send parent, {ip, ping(ip)}
+    send parent, run_ping(ip)
   end
 
   @doc """
-  Ping a single IP address and return true if there is a response."
+  Ping a single IP address returning a tuple which `ping_async` can return.
   """
-  def ping(ip) do
-    # return code should be handled somehow with pattern matching
-    {cmd_output, _} = System.cmd("ping", ping_args(ip))
-    not Regex.match?(~r/100(\.0)?% packet loss/, cmd_output)
+  def run_ping(ip) do
+    # This is a Ruby-ish way of dealing with failure...
+    # TODO: Discover the "Elixir way"
+    try do
+      # return code should be handled somehow with pattern matching
+      {cmd_output, _} = System.cmd("ping", ping_args(ip))
+      alive? = not Regex.match?(~r/100(\.0)?% packet loss/, cmd_output)
+      {:ok, ip, alive?}
+    rescue
+      e -> {:error, ip, e}
+    end
   end
 
   def ping_args(ip) do
@@ -44,7 +65,9 @@ defmodule Subnet do
   def ping(subnet) do
     all = ips(subnet)
     Enum.each all, fn ip ->
-      spawn(Ping, :ping_async, [ip, self])
+      # Task.start gives better logging than spawn when things go awry.
+      # http://elixir-lang.org/getting-started/processes.html#tasks
+      Task.start(Ping, :ping_async, [ip, self])
     end
     wait HashDict.new, Enum.count(all)
   end
@@ -60,10 +83,12 @@ defmodule Subnet do
   defp wait(dict, 0), do: dict
   defp wait(dict, remaining) do
     receive do
-      {ip, exists} ->
-        dict = Dict.put(dict, ip, exists)
-        wait dict, remaining-1
+      {:ok, ip, pingable?} ->
+        dict = Dict.put(dict, ip, pingable?)
+      {:error, ip, error} ->
+        IO.puts "#{inspect error} for #{ip}"
     end
+    wait dict, remaining - 1
   end
 end
 
