@@ -84,6 +84,18 @@ defmodule ListTest do
     IO.puts "manual reverse took #{microsec} microsecs"
   end
 
+  # Another thing worth pointing out is it's cheap to insert at the front of a
+  # list while it's expensive to insert at the end of a list (which is O(n)).
+  test "speed of inserting at the end of a list" do
+    {microsec, reversed} = :timer.tc fn ->     # Erlang function, yay!
+      # It takes about 1.6 seconds on my laptop even with only 10000 elements.
+      # For 1..1_000_000, it would take a really long time.
+      Enum.reduce 1..10000, [], fn (i, l) -> List.insert_at(l, -1, i) end
+    end
+    assert reversed == Enum.to_list(1..10000)
+    IO.puts "inserting at the end of a list took #{microsec} microsecs"
+  end
+
   test "Enum.reverse speed" do
     {microsec, reversed} = :timer.tc fn ->
       Enum.reverse 1..1_000_000
