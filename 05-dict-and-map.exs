@@ -38,6 +38,15 @@ defmodule MapTest do
     assert Map.put(sample, :far, 'bar') == %{foo: 'bar', baz: 'quz', far: 'bar'}
   end
 
+  test "Update map using pattern matching syntax" do
+    # You can only update existing keys in this way
+    assert %{sample | :foo => 'bob'} == %{foo: 'bob', baz: 'quz'}
+    # It doesn't work if you want to add new keys
+    assert_raise ArgumentError, fn ->
+      %{sample | :far => 'bob'}
+    end
+  end
+
   test "Map.values" do
     # Map does not preserve order of keys, thus we Enum.sort
     assert Enum.sort(Map.values(sample)) == ['bar', 'quz']
