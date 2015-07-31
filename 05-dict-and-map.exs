@@ -40,10 +40,10 @@ defmodule MapTest do
 
   test "Update map using pattern matching syntax" do
     # You can only update existing keys in this way
-    assert %{sample | :foo => 'bob'} == %{foo: 'bob', baz: 'quz'}
+    assert %{sample | foo: 'bob'} == %{foo: 'bob', baz: 'quz'}
     # It doesn't work if you want to add new keys
     assert_raise ArgumentError, fn ->
-      %{sample | :far => 'bob'}
+      %{sample | far: 'bob'}
     end
   end
 
