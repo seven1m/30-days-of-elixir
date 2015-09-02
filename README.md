@@ -14,7 +14,7 @@ A walk through the [Elixir](http://elixir-lang.org/) language, one exercise per 
 
 **04-list.exs** - What's a functional language without a List? Here we learn some simple list manipulation, and for awhile we can pretend lists are like our familiar Ruby arrays. :-)
 
-**05-dict.exs** - Dict and Keyword structures are a bit of a departure from the Hash in Ruby world. Sure, it's an associative array, but wrapping our minds around Keyword vs HashDict vs ListDict can be confusing. Luckily, it seems we can simplify by defaulting to [HashDict.new](http://elixir-lang.org/docs/stable/elixir/HashDict.html#new/0) and using the [Dict methods](http://elixir-lang.org/docs/stable/elixir/Dict.html) for manipulation.
+**05-map.exs** - A Dict implementation that works en maps. For more information about the functions in this module and their APIs, please consult the Dict module.
 
 **06-record.exs** - Where are our beloved objects? In functional programming, data is just data, and Elixir gives you the Record structure to organize it a bit. Records are a little like Struct from other imperative languages, except of course they are immutable!
 
