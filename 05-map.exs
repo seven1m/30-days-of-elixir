@@ -1,4 +1,3 @@
-# http://elixir-lang.org/docs/stable/elixir/Dict.html
 # http://elixir-lang.org/docs/stable/elixir/Map.html
 
 ExUnit.start
@@ -50,31 +49,6 @@ defmodule MapTest do
   test "Map.values" do
     # Map does not preserve order of keys, thus we Enum.sort
     assert Enum.sort(Map.values(sample)) == ['bar', 'quz']
-  end
-end
-
-
-defmodule SpeedTest do
-  use ExUnit.Case
-
-  # HashDict is fast (9038 microsecs)
-  test "HashDict speed" do
-    {microsec, _} = :timer.tc fn ->
-      Enum.reduce 1..10_000, HashDict.new, fn (i, d) ->
-        Dict.put d, i, 'foo'
-      end
-    end
-    IO.puts "HashDict took #{microsec} microsecs"
-  end
-
-  # Map is slower?? (405888 microsecs)
-  test "Map speed" do
-    {microsec, _} = :timer.tc fn ->
-      Enum.reduce 1..10_000, Map.new, fn (i, d) ->
-        Map.put d, i, 'foo'
-      end
-    end
-    IO.puts "Map took #{microsec} microsecs"
   end
 end
 
