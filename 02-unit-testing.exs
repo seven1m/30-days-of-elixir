@@ -26,7 +26,7 @@ defmodule MyTest do
     end
   end
 
-  test "assert_in_delta asserts that val1 and val2 differ by no more than delta." do
+  test "assert_in_delta asserts that val1 and val2 differ by less than delta." do
     assert_in_delta 1, # actual
                     5, # expected
                     6  # delta
