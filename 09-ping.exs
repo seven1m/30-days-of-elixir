@@ -1,8 +1,6 @@
-# NOTE: I just recently tried running this on my Mac OS machine.
-#
 # If you get errors running 254 ping commands it's probably due to the number
 # of open files.  You can "fix" this by running this command in the terminal
-# session bofore running this program:
+# session before running this program:
 #
 #   ulimit -n 1024
 #
