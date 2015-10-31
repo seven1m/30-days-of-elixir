@@ -10,7 +10,6 @@ defmodule CowInterrogator do
   Gets name from standard IO
   """
   def get_name do
-
     String.strip IO.gets("What is your name? ")
   end
 
