@@ -14,7 +14,7 @@ defmodule CowInterrogator do
   end
 
   def get_cow_lover do
-    IO.getn("Do you like cows? [y|n]", 1)
+    IO.getn("Do you like cows? [y|n] ", 1)
   end
 
   def interrogate do
