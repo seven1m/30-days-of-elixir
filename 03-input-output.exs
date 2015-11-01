@@ -26,7 +26,7 @@ defmodule CowInterrogator do
       "n" ->
         IO.puts "That's a shame, #{name}."
       _ ->
-        IO.puts "You should have entered 'Y' or 'N'."
+        IO.puts "You should have entered 'y' or 'n'."
     end
   end
 
