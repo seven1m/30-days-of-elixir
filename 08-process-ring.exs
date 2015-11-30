@@ -25,9 +25,6 @@ defmodule Pinger do
       # someone told us to stop, so pass along the message
       {[next | rest], :ok} ->
         send next, {rest, :ok}
-
-      # done!
-      {[], :ok} -> :ok
     end
   end
 end
