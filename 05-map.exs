@@ -41,7 +41,7 @@ defmodule MapTest do
     # You can only update existing keys in this way
     assert %{sample | foo: 'bob'} == %{foo: 'bob', baz: 'quz'}
     # It doesn't work if you want to add new keys
-    assert_raise ArgumentError, fn ->
+    assert_raise KeyError, fn ->
       %{sample | far: 'bob'}
     end
   end
