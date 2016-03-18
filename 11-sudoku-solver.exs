@@ -56,7 +56,7 @@ defmodule SudokuSolver do
     board
       |> solutions
       |> map(fn s -> apply_solution(board, s) end)
-      |> find fn b -> SudokuBoard.solved?(b) end
+      |> find(fn b -> SudokuBoard.solved?(b) end)
   end
 
   @doc """
@@ -115,7 +115,7 @@ defmodule SudokuSolver do
   def combinations([list | rest]) do
     crest = combinations(rest)
     for p <- permutations(list), r <- crest do
-      flat_map p, fn i -> [i | r] end
+      List.flatten([p | r])
     end
   end
   def combinations([]), do: [[]]
@@ -141,6 +141,12 @@ defmodule SudokuSolverTest do
   use ExUnit.Case
 
   import SudokuSolver
+
+  test "correct behavior of combinations" do
+    assert combinations([[1]]) == [[1]]
+    assert combinations([[2, 3], [1]]) == [[2, 3, 1], [3, 2, 1]]
+    assert combinations([[1], [2], [3, 4]]) == [[1, 2, 3, 4], [1, 2, 4, 3]]
+  end
 
   test "solves a small board" do
     board = [[1,   nil, 3  ],
