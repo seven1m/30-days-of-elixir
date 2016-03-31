@@ -47,6 +47,8 @@ defmodule ListTest do
   test "Enum.reduce" do
     list = [20, 10, 5, 2.5]
     sum = Enum.reduce list, 0, &(&1 + &2)
+    # or...
+    # sum = Enum.reduce list, 0, fn (num, sum) -> num + sum end
     assert sum == 37.5
   end
 
