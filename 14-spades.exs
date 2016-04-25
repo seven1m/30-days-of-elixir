@@ -93,7 +93,7 @@ defmodule Dealer do
         if length(cards_played) == 4 do
           {winner, _} = trick_winner(cards_played)
           broadcast(players, {:trick, winner})
-          send winner, :your_turn
+          if tricks_played < 12, do: send winner, :your_turn
           wait_for_plays(players, [], tricks_played + 1)
         else
           players = reorder_players(players, player)
