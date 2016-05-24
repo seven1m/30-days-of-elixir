@@ -17,8 +17,6 @@ break it, rewrite the code in your own style, etc. Experiment, and if you find a
 **02-unit-testing.exs** - We'll need unit testing for the rest of the excercises, so let's do this! The built-in unit
 testing library ExUnit is capable and easy-to-use.
 
-**03-pattern-matching-guards.exs** - Let's get some basic familiarity with pattern matching and the like. This is easy!
-
 **03-input-output.exs** - Here we learn that file input and user input are easy. José has even done us a solid and
 duplicated some familiar Path and File methods from Ruby.
 
