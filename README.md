@@ -14,7 +14,7 @@ break it, rewrite the code in your own style, etc. Experiment, and if you find a
 
 **01-hello-world.exs** - We start at the very beginning: our first message to the world!
 
-**02-unit-testing.exs** - We'll need unit testing for the rest of the excercises, so let's do this! The built-in unit
+**02-unit-testing.exs** - We'll need unit testing for the rest of the exercises, so let's do this! The built-in unit
 testing library ExUnit is capable and easy-to-use.
 
 **03-input-output.exs** - Here we learn that file input and user input are easy. José has even done us a solid and
