@@ -103,7 +103,7 @@ library, just for fun.
 
 ### The Rat Pack didn't have Macros.
 
-**[26-frank.exs](26-frank.exs)** - Here we'll make a brief incursion into the land of macros. In this excercise, we'll build a web DSL
+**[26-frank.exs](26-frank.exs)** - Here we'll make a brief incursion into the land of macros. In this exercise, we'll build a web DSL
 with custom syntax. This first try we'll just use a macro to write a method. `quote`/`unquote` confounds a bit.
 
 **[27-frank-2.exs](27-frank-2.exs)** - This version of Frank is only a little better, but lets our path matches contain any character and
@@ -115,7 +115,7 @@ patterns in the URL, e.g. `/foo/:id` and our macro code got simpler!
 
 ### You'll never learn if you don't Trie.
 
-**[29-vector.exs](29-vector.exs)** - For our last couple of exercises, let's do something completly different! Elixir has a list data
+**[29-vector.exs](29-vector.exs)** - For our last couple of exercises, let's do something completely different! Elixir has a list data
 structure, but no [Vector](http://clojure.org/data_structures#Data Structures-Vectors (IPersistentVector)), so let's
 create one... our first attempt has us learning about Hash Array Mapped Trie (HAMT), and as it turns out, using this
 structure for a vector wasn't the best idea.
