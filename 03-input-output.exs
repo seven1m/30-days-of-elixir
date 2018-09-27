@@ -1,5 +1,5 @@
-# http://elixir-lang.org/docs/stable/elixir/IO.html
-# http://elixir-lang.org/docs/stable/elixir/File.html
+# https://hexdocs.pm/elixir/IO.html
+# https://hexdocs.pm/elixir/File.html
 
 defmodule CowInterrogator do
 
@@ -19,11 +19,11 @@ defmodule CowInterrogator do
   end
 
   def interrogate do
-    name = get_name
-    case String.downcase(get_cow_lover) do
+    name = get_name()
+    case String.downcase(get_cow_lover()) do
       "y" ->
         IO.puts "Great! Here's a cow for you #{name}:"
-        IO.puts cow_art
+        IO.puts cow_art()
       "n" ->
         IO.puts "That's a shame, #{name}."
       _ ->
