@@ -1,5 +1,5 @@
 # http://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html
-# http://elixir-lang.org/docs/stable/ex_unit/ExUnit.html
+# https://hexdocs.pm/ex_unit/ExUnit.html
 
 ExUnit.start                                # set up the test runner
 
