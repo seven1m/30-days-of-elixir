@@ -60,13 +60,6 @@ defmodule ListTest do
     assert List.wrap(nil) == []
   end
 
-  # https://niallburkley.com/blog/elixir-filter-map/
-  test "Enum.filter_map" do
-    # some = Enum.filter_map sample(), &(String.first(&1) >= "M"), &(&1 <> " Morgan")
-    some = sample() |> Enum.filter(fn(value) -> String.first(value) >= "M" end) |> Enum.map(fn(filtered_value) -> filtered_value <> " Morgan" end)
-    assert some == ["Tim Morgan", "Mac Morgan"]
-  end
-
   test "list comprehension" do
     some = for n <- sample(), String.first(n) < "M", do: n <> " Morgan"
     assert some == ["Jen Morgan", "Kai Morgan"]
