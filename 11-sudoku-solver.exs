@@ -78,7 +78,7 @@ defmodule SudokuSolver do
     board = List.flatten(board)
     pos = find_index board, fn col -> col == nil end
     List.replace_at(board, pos, first)
-      |> chunk(size)
+      |> chunk_every(size)
       |> apply_solution(rest)
   end
   def apply_solution(board, []), do: board
