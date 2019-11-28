@@ -17,7 +17,7 @@ defmodule Deck do
 
     If no deck is given, then create a new one and shuffle that.
   """
-  def shuffle(deck \\ new) do
+  def shuffle(deck \\ new()) do
     Enum.shuffle(deck)
   end
 
@@ -83,7 +83,7 @@ defmodule DeckTest do
     assert Enum.at(players, 1) == {"jen", [{"Hearts", 3}, {"Hearts", 7}, {"Hearts", "J"}, {"Clubs",    2}, {"Clubs", 6}]}
     assert Enum.at(players, 2) == {"mac", [{"Hearts", 4}, {"Hearts", 8}, {"Hearts", "Q"}, {"Clubs",    3}, {"Clubs", 7}]}
     assert Enum.at(players, 3) == {"kai", [{"Hearts", 5}, {"Hearts", 9}, {"Hearts", "K"}, {"Clubs",    4}, {"Clubs", 8}]}
-    [next | rest_of_deck] = deck
+    [next | _rest_of_deck] = deck
     assert next == {"Clubs", 9}
   end
 end
