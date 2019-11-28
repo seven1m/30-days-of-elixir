@@ -29,50 +29,50 @@ defmodule SudokuSolver do
   def unit_list do
     (for c <- @cols, do: cross(@rows, [c])) ++
     (for r <- @rows, do: cross([r], @cols)) ++
-    (for rs <- chunk(@rows, 3), cs <- chunk(@cols, 3), do: cross(rs, cs))
+    (for rs <- chunk_every(@rows, 3), cs <- chunk_every(@cols, 3), do: cross(rs, cs))
   end
 
   @doc """
-  All squares from unit_list, organized in a Dict with each square as key.
+  All squares from unit_list, organized in a Map with each square as key.
 
-     iex> Dict.get(SudokuSolver.units, 'C2')
+     iex> Map.get(SudokuSolver.units, 'C2')
      [['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'I2'],
       ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9'],
       ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3']]
   """
   def units do
-    ul = unit_list
-    list = for s <- squares, do: {s, (for u <- ul, s in u, do: u)}
-    Enum.into(list, HashDict.new)
+    ul = unit_list()
+    list = for s <- squares(), do: {s, (for u <- ul, s in u, do: u)}
+    Enum.into(list, %{})
   end
 
   @doc """
-  Like units/0 above, returning a Dict, but not including the key itself.
+  Like units/0 above, returning a Map, but not including the key itself.
 
-     iex> Dict.get(SudokuSolver.peers, 'C2')
-     HashSet.new(['A2', 'B2', 'D2', 'E2', 'F2', 'G2', 'H2', 'I2',
+     iex> Map.get(SudokuSolver.peers, 'C2')
+     MapSet.new(['A2', 'B2', 'D2', 'E2', 'F2', 'G2', 'H2', 'I2',
                   'C1', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9',
                   'A1', 'A3', 'B1', 'B3'])
   """
   def peers do
     squares = cross(@rows, @cols)
-    u = units
+    u = units()
     list = for s <- squares do
-      all = u |> Dict.get(s) |> concat |> Enum.into(HashSet.new)
-      me = [s] |> Enum.into(HashSet.new)
-      {s, HashSet.difference(all, me)}
+      all = u |> Map.get(s) |> concat |> Enum.into(MapSet.new)
+      me = [s] |> Enum.into(MapSet.new)
+      {s, MapSet.difference(all, me)}
     end
-    Enum.into(list, HashDict.new)
+    Enum.into(list, %{})
   end
 
   @doc """
-  Convert grid to a Dict of possible values, {square: digits}, or
+  Convert grid to a Map of possible values, {square: digits}, or
   return false if a contradiction is detected.
   """
   def parse_grid(grid, board) do
     # To start, every square can be any digit; then assign values from the grid.
-    values = Enum.into((for s <- board.squares, do: {s, @cols}), HashDict.new)
-    do_parse_grid(values, Dict.to_list(grid_values(grid)), board)
+    values = Enum.into((for s <- board.squares, do: {s, @cols}), %{})
+    do_parse_grid(values, Map.to_list(grid_values(grid)), board)
   end
 
   defp do_parse_grid(values, [{square, value} | rest], board) do
@@ -86,12 +86,12 @@ defmodule SudokuSolver do
   defp do_parse_grid(values, [], _), do: values
 
   @doc """
-  Convert grid into a Dict of {square: char} with '0' or '.' for empties.
+  Convert grid into a Map of {square: char} with '0' or '.' for empties.
   """
   def grid_values(grid) do
     chars = for c <- grid, c in @cols or c in '0.', do: c
     unless count(chars) == 81, do: raise('error')
-    Enum.into(zip(squares, chars), HashDict.new)
+    Enum.into(zip(squares(), chars), %{})
   end
 
   @doc """
@@ -99,8 +99,8 @@ defmodule SudokuSolver do
   Return values, except return false if a contradiction is detected.
   """
   def assign(values, s, d, board) do
-    values = Dict.put(values, s, [d])
-    p = Dict.to_list(Dict.get(board.peers, s))
+    values = Map.put(values, s, [d])
+    p = MapSet.to_list(Map.get(board.peers, s))
     eliminate(values, p, [d], board)
   end
 
@@ -117,22 +117,22 @@ defmodule SudokuSolver do
   # (1) If a square s is reduced to one value, then eliminate it from the peers.
   # (2) If a unit u is reduced to only one place for a value d, then put it there.
   defp eliminate_vals_from_square(values, square, vals_to_remove, board) do
-    vals = Dict.get(values, square)
-    if Set.intersection(Enum.into(vals, HashSet.new), Enum.into(vals_to_remove, HashSet.new)) |> any? do
+    vals = Map.get(values, square)
+    if MapSet.intersection(Enum.into(vals, MapSet.new), Enum.into(vals_to_remove, MapSet.new)) |> any? do
       vals = reduce vals_to_remove, vals, fn val, vals -> List.delete(vals, val) end
       if length(vals) == 0 do
         # contradiction, removed last value
         false
       else
-        values = Dict.put(values, square, vals)
+        values = Map.put(values, square, vals)
         values = if length(vals) == 1 do
           # eliminate value(s) from the peers.
-          eliminate(values, Dict.to_list(Dict.get(board.peers, square)), vals, board)
+          eliminate(values, MapSet.to_list(Map.get(board.peers, square)), vals, board)
         else
           values
         end
         # eliminate value(s) from units
-        eliminate_from_units(values, Dict.get(board.units, square), vals_to_remove, board)
+        eliminate_from_units(values, Map.get(board.units, square), vals_to_remove, board)
       end
     else
       values
@@ -143,7 +143,7 @@ defmodule SudokuSolver do
   defp eliminate_from_units(values, units, vals_to_remove, board) do
     reduce_if_truthy units, values, fn unit, values ->
       reduce_if_truthy vals_to_remove, values, fn val, values ->
-        dplaces = for s <- unit, val in Dict.get(values, s), do: s
+        dplaces = for s <- unit, val in Map.get(values, s), do: s
         case length(dplaces) do
           0 -> false                                      # contradiction: no place for this value
           1 -> assign(values, at(dplaces, 0), val, board) # d can only be in one place in unit; assign it there
@@ -167,7 +167,7 @@ defmodule SudokuSolver do
   Use display/1 to print the grid as a square.
   """
   def solve(grid) do
-    board = %Board{squares: squares, units: units, peers: peers}
+    board = %Board{squares: squares(), units: units(), peers: peers()}
     grid
       |> parse_grid(board)
       |> search(board)
@@ -175,11 +175,11 @@ defmodule SudokuSolver do
   end
 
   @doc """
-  Flatten a values Dict back into a single char list.
+  Flatten a values Map back into a single char list.
   """
   def flatten(values, board) do
     board.squares
-      |> map(fn s -> Dict.get(values, s) end)
+      |> map(fn s -> Map.get(values, s) end)
       |> concat
   end
 
@@ -188,15 +188,15 @@ defmodule SudokuSolver do
   """
   def search(false, _), do: false
   def search(values, board) do
-    if all?(board.squares, fn s -> count(Dict.get(values, s)) == 1 end) do
+    if all?(board.squares, fn s -> count(Map.get(values, s)) == 1 end) do
       values # solved!
     else
       # Chose the unfilled square s with the fewest possibilities
-      {square, _count} = map(board.squares, &({&1, count(Dict.get(values, &1))}))
+      {square, _count} = map(board.squares, &({&1, count(Map.get(values, &1))}))
         |> filter(fn {_, c} -> c > 1 end)
         |> sort(fn {_, c1}, {_, c2} -> c1 < c2 end)
         |> List.first
-      find_value Dict.get(values, square), fn d ->
+      find_value Map.get(values, square), fn d ->
         assign(values, square, d, board) |> search(board)
       end
     end
@@ -206,8 +206,8 @@ defmodule SudokuSolver do
   Display these values as a 2-D grid.
   """
   def display(grid) do
-    chunk(grid, @size)
-      |> map(fn row -> chunk(row, 1) |> join(" ") end)
+    chunk_every(grid, @size)
+      |> map(fn row -> chunk_every(row, 1) |> join(" ") end)
       |> join("\n")
       |> IO.puts
   end
