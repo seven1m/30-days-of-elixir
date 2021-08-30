@@ -28,7 +28,6 @@ defmodule Deck do
 
     Returns the list of players.
   """
-
   def deal(cards, players, deal_fn, cards_per_player \\ 52) do
     cards_left = cards_per_player * Enum.count(players)
     _deal(cards, players, deal_fn, cards_left)
