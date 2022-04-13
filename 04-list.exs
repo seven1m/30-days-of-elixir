@@ -67,7 +67,7 @@ defmodule ListTest do
 
   # I was curious about raw speed of working with large lists...
   # Let's just build and reverse a large list.
-  # Suprisingly, the manual way is not much slower.
+  # Surprisingly, the manual way is not much slower.
 
   # Also got to browse Erlang docs for timer:tc/1
   # (http://www.erlang.org/doc/man/timer.html#tc-1) and call thru from Elixir.
