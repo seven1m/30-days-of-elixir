@@ -100,12 +100,12 @@ defmodule Vector do
   defp do_reduce(_, _, _, _, acc, _), do: acc
 
   defp key(index, depth) when depth > 0, do: key(index, depth, [])
-  defp key(index, depth, indeces) when depth > 0 do
+  defp key(index, depth, indices) when depth > 0 do
     level = (depth - 1) * @bits
-    indeces = indeces ++ [(index >>> level) &&& @mask]
-    key(index, depth - 1, indeces)
+    indices = indices ++ [(index >>> level) &&& @mask]
+    key(index, depth - 1, indices)
   end
-  defp key(_, _, indeces), do: indeces
+  defp key(_, _, indices), do: indices
 
   defp tree_from_list(list, depth) when depth > 1 do
     list

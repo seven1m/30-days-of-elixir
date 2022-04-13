@@ -121,7 +121,7 @@ defmodule SudokuSolver do
   def combinations([]), do: [[]]
 
   @doc """
-  Return all possible permuations of a list.
+  Return all possible permutations of a list.
 
   ## Example
 

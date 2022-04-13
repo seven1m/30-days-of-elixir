@@ -12,7 +12,7 @@ defmodule Vector do
   And last, the tree structure isn't compressed, so it gets big fast... don't bother
   trying to IO.inspect the sucker!
 
-  But this is good enough for a single day's excercise, and I learned a ton
+  But this is good enough for a single day's exercise, and I learned a ton
   in the process... Yay for learning! :-)
   """
 
